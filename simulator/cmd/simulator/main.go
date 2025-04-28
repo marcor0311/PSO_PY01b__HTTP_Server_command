@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-	fmt.Println("=== Assembly Line Simulator Test ===")
 
 	// inicia canales
 	input := make(chan *model.Product, 1)
@@ -35,6 +34,5 @@ func main() {
 	fmt.Printf("Product %d processed!\n", result.Id)
 	fmt.Printf("Entered Cut: %v\n", result.EnteredCut)
 	fmt.Printf("Exited Cut: %v\n", result.ExitedCut)
-	fmt.Println("=== Test Finished ===")
 }
 
