@@ -61,4 +61,9 @@ func PrintMetrics(products []*model.Product) {
 		fmt.Printf("Product %d | Arrival: %v | Total Time: %v | Waiting: %v\n",
 			product.Id, product.ArrivalTime.Format("15:04:05"), ta, wait)
 	}
+
+	n := time.Duration(len(products))
+	fmt.Println("---- Results ----")
+	fmt.Printf("Average Turnaround Time: %v\n", totalTurnaround/n)
+	fmt.Printf("Average Waiting Time: %v\n", totalWaiting/n)
 }

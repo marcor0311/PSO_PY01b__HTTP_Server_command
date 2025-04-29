@@ -9,11 +9,11 @@ const (
 )
 
 const (
-	CuttingMinTime    = 2 * time.Second
-	CuttingMaxTime    = 3 * time.Second
+	CuttingMinTime    = 1 * time.Second
+	CuttingMaxTime    = 4 * time.Second
 	AssemblingMinTime = 2 * time.Second
-	AssemblingMaxTime = 4 * time.Second
+	AssemblingMaxTime = 3 * time.Second
 	PackagingMinTime  = 0 * time.Second
-	PackagingMaxTime  = 1 * time.Second
+	PackagingMaxTime  = 3 * time.Second
 )
 

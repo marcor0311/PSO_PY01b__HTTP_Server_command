@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"sync"
 	"time"
-	"os"
 
 	"simulator/internal/constants"
 	"simulator/internal/dispatcher"
@@ -35,8 +35,8 @@ func main() {
 
 	quantum := 2 * time.Second
 
-	// Initialize the channels 
-	ipc.InitChannels(10)
+	// Initialize the channels
+	ipc.InitChannels(5)
 
 	// Create Mutex for synchronization
 	var cutMutex sync.Mutex
@@ -47,14 +47,14 @@ func main() {
 	sched := scheduler.NewFCFS()
 
 	// Creates the stations and defines its order
-	go station.Station(constants.StationCutting, ipc.Cutting, ipc.Assembling, utils.RandomDuration(constants.CuttingMinTime, constants.CuttingMaxTime), &cutMutex, mode, quantum)
-	go station.Station(constants.StationAssembling, ipc.Assembling, ipc.Packaging, utils.RandomDuration(constants.AssemblingMinTime, constants.AssemblingMaxTime), &assembleMutex, mode, quantum)
-	go station.Station(constants.StationPackaging, ipc.Packaging, nil, utils.RandomDuration(constants.PackagingMinTime, constants.PackagingMaxTime), &packMutex, mode, quantum)
+	go station.Station(constants.StationCutting, ipc.Cutting, ipc.Assembling, &cutMutex, mode, quantum)
+	go station.Station(constants.StationAssembling, ipc.Assembling, ipc.Packaging, &assembleMutex, mode, quantum)
+	go station.Station(constants.StationPackaging, ipc.Packaging, nil, &packMutex, mode, quantum)
 
 	// Generate 10 products with random arrival times
 	go utils.GenerateProducts(sched, 10, 500*time.Millisecond, 2*time.Second)
 
-	// Inserts the products from the scheduler into the first station 
+	// Inserts the products from the scheduler into the first station
 	go dispatcher.DispatchProducts(sched, ipc.Cutting)
 
 	var finishedProducts []*model.Product

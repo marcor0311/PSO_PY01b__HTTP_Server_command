@@ -8,6 +8,7 @@ import (
 	"simulator/internal/constants"
 	"simulator/internal/ipc"
 	"simulator/internal/model"
+	"simulator/internal/utils"
 )
 
 /**
@@ -16,25 +17,41 @@ import (
  * @param {string} name - The name of the station (constants).
  * @param {<-chan *model.Product} input - Receive-only channel.
  * @param {chan<- *model.Product} output - Send-only channel (nil if last station).
- * @param {time.Duration} processingTime - Time to simulate processing.
  * @param {*sync.Mutex} mutex - Mutex to synchronize access to the station.
  * @param {string} algorithm - Scheduling algorithm ("fcfs" or "rr").
  * @param {time.Duration} quantum - Time slice for round-robin.
  */
-func Station(name string, input <-chan *model.Product, output chan<- *model.Product, processingTime time.Duration, mutex *sync.Mutex, algorithm string, quantum time.Duration) {
+func Station(name string, input <-chan *model.Product, output chan<- *model.Product, mutex *sync.Mutex, algorithm string, quantum time.Duration) {
 	queue := []*model.Product{}
 
 	for {
 		var product *model.Product
-		if len(queue) > 0 {
-			product = queue[0]
-			queue = queue[1:]
-		} else {
-			incoming, ok := <-input
+
+		var processingTime time.Duration
+
+		switch name {
+		case constants.StationCutting:
+			processingTime = utils.RandomDuration(constants.CuttingMinTime, constants.CuttingMaxTime)
+		case constants.StationAssembling:
+			processingTime = utils.RandomDuration(constants.AssemblingMinTime, constants.AssemblingMaxTime)
+		case constants.StationPackaging:
+			processingTime = utils.RandomDuration(constants.PackagingMinTime, constants.PackagingMaxTime)
+		}
+
+		select {
+		case incoming, ok := <-input:
 			if !ok {
-				break
+				return
 			}
 			product = incoming
+		default:
+			if len(queue) > 0 {
+				product = queue[0]
+				queue = queue[1:]
+			} else {
+				time.Sleep(10 * time.Millisecond)
+				continue
+			}
 		}
 
 		mutex.Lock()
