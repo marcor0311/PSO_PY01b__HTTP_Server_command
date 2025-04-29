@@ -26,4 +26,4 @@ go run cmd/simulator/main.go [fcfs|rr]
 
 ## Explanation Video
 
-https://youtu.be/tjSNwldLhuc
+https://www.youtube.com/watch?v=xKuhh616dds
