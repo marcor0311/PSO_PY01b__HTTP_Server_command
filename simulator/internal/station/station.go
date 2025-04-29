@@ -18,12 +18,28 @@ import (
  * @param {chan<- *model.Product} output - Send-only channel (nil if last station).
  * @param {time.Duration} processingTime - Time to simulate processing.
  * @param {*sync.Mutex} mutex - Mutex to synchronize access to the station.
+ * @param {string} algorithm - Scheduling algorithm ("fcfs" or "rr").
+ * @param {time.Duration} quantum - Time slice for round-robin.
  */
- func Station(name string, input <-chan *model.Product, output chan<- *model.Product, processingTime time.Duration, mutex *sync.Mutex) {
-	for product := range input {
+func Station(name string, input <-chan *model.Product, output chan<- *model.Product, processingTime time.Duration, mutex *sync.Mutex, algorithm string, quantum time.Duration) {
+	queue := []*model.Product{}
+
+	for {
+		var product *model.Product
+		if len(queue) > 0 {
+			product = queue[0]
+			queue = queue[1:]
+		} else {
+			incoming, ok := <-input
+			if !ok {
+				break
+			}
+			product = incoming
+		}
+
 		mutex.Lock()
 
-		fmt.Printf("[%s] Received product %d\n", name, product.Id)
+		fmt.Printf("[%s] Processing product %d\n", name, product.Id)
 
 		now := time.Now()
 		switch name {
@@ -35,7 +51,31 @@ import (
 			product.EnteredPackage = now
 		}
 
-		time.Sleep(processingTime)
+		if algorithm == "rr" {
+			// Initialize RemainingTime if it's a new product
+			if product.RemainingTime == 0 {
+				product.RemainingTime = processingTime
+			}
+
+			slice := quantum
+			if product.RemainingTime < quantum {
+				slice = product.RemainingTime
+			}
+			fmt.Printf("[%s] Processing product %d for %v\n", name, product.Id, slice)
+			time.Sleep(slice)
+			product.RemainingTime -= slice
+
+			// Requeue unfinished products internally instead of sending them back to output channel
+			if product.RemainingTime > 0 {
+				fmt.Printf("[%s] Re-enqueued product %d with %v remaining\n", name, product.Id, product.RemainingTime)
+				queue = append(queue, product)
+				mutex.Unlock()
+				continue
+			}
+		} else {
+			fmt.Printf("[%s] Processing product %d for %v\n", name, product.Id, processingTime)
+			time.Sleep(processingTime)
+		}
 
 		now = time.Now()
 		switch name {

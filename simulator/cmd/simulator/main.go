@@ -15,6 +15,13 @@ import (
 )
 
 func main() {
+	// Set the scheduling algorithm and quantum (if applicable), for each station
+	cuttingAlgorithm := "rr"
+	assemblingAlgorithm := "rr"
+	packagingAlgorithm := "rr"
+
+	quantum := 2 * time.Second
+
 	// Initialize the channels 
 	ipc.InitChannels(10)
 
@@ -27,9 +34,9 @@ func main() {
 	sched := scheduler.NewFCFS()
 
 	// Creates the stations and defines its order
-	go station.Station(constants.StationCutting, ipc.Cutting, ipc.Assembling, utils.RandomDuration(constants.CuttingMinTime, constants.CuttingMaxTime), &cutMutex)
-	go station.Station(constants.StationAssembling, ipc.Assembling, ipc.Packaging, utils.RandomDuration(constants.AssemblingMinTime, constants.AssemblingMaxTime), &assembleMutex)
-	go station.Station(constants.StationPackaging, ipc.Packaging, nil, utils.RandomDuration(constants.PackagingMinTime, constants.PackagingMaxTime), &packMutex)
+	go station.Station(constants.StationCutting, ipc.Cutting, ipc.Assembling, utils.RandomDuration(constants.CuttingMinTime, constants.CuttingMaxTime), &cutMutex, cuttingAlgorithm, quantum)
+	go station.Station(constants.StationAssembling, ipc.Assembling, ipc.Packaging, utils.RandomDuration(constants.AssemblingMinTime, constants.AssemblingMaxTime), &assembleMutex, assemblingAlgorithm, quantum)
+	go station.Station(constants.StationPackaging, ipc.Packaging, nil, utils.RandomDuration(constants.PackagingMinTime, constants.PackagingMaxTime), &packMutex, packagingAlgorithm, quantum)
 
 	// Generate 10 products with random arrival times
 	go utils.GenerateProducts(sched, 10, 500*time.Millisecond, 2*time.Second)
