@@ -16,9 +16,9 @@ import (
 
 func main() {
 	// Set the scheduling algorithm and quantum (if applicable), for each station
-	cuttingAlgorithm := "rr"
+	cuttingAlgorithm := "fcfs"
 	assemblingAlgorithm := "rr"
-	packagingAlgorithm := "rr"
+	packagingAlgorithm := "fcfs"
 
 	quantum := 2 * time.Second
 

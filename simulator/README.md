@@ -1,11 +1,27 @@
 # SO_TC_02_Interprocess_Communication
 
-# Execution instructions
+## Execution Instructions
 
-## Initialize Go modules
+### Initialize Go Modules
 
-```go mod tidy``` 
+```
+go mod tidy
+```
 
-## Running the Simulator
+### Run the Simulator from the Project Root
 
-```go run main.go```
+```
+go run main.go
+```
+
+### Run the Simulator as Shown in the Video (from `simulator` folder)
+
+```
+cd simulator
+go mod tidy
+go run ./cmd/simulator
+```
+
+## Explanation Video
+
+https://youtu.be/tjSNwldLhuc
