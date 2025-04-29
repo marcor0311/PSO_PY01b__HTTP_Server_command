@@ -1,38 +1,58 @@
 package main
 
 import (
-    "fmt"
-    "time"
+	"sync"
+	"time"
 
 	"simulator/internal/constants"
+	"simulator/internal/dispatcher"
+	"simulator/internal/ipc"
 	"simulator/internal/model"
+	"simulator/internal/results"
+	"simulator/internal/scheduler"
 	"simulator/internal/station"
+	"simulator/internal/utils"
 )
 
 func main() {
+	// Set the scheduling algorithm and quantum (if applicable), for each station
+	cuttingAlgorithm := "fcfs"
+	assemblingAlgorithm := "rr"
+	packagingAlgorithm := "fcfs"
 
-	// inicia canales
-	input := make(chan *model.Product, 1)
-	output := make(chan *model.Product, 1)
+	quantum := 2 * time.Second
 
-	// producto 
-	product := &model.Product{
-		Id: 1,
-		ArrivalTime: time.Now(),
+	// Initialize the channels 
+	ipc.InitChannels(10)
+
+	// Create Mutex for synchronization
+	var cutMutex sync.Mutex
+	var assembleMutex sync.Mutex
+	var packMutex sync.Mutex
+
+	// Initialize the FCFS scheduler
+	sched := scheduler.NewFCFS()
+
+	// Creates the stations and defines its order
+	go station.Station(constants.StationCutting, ipc.Cutting, ipc.Assembling, utils.RandomDuration(constants.CuttingMinTime, constants.CuttingMaxTime), &cutMutex, cuttingAlgorithm, quantum)
+	go station.Station(constants.StationAssembling, ipc.Assembling, ipc.Packaging, utils.RandomDuration(constants.AssemblingMinTime, constants.AssemblingMaxTime), &assembleMutex, assemblingAlgorithm, quantum)
+	go station.Station(constants.StationPackaging, ipc.Packaging, nil, utils.RandomDuration(constants.PackagingMinTime, constants.PackagingMaxTime), &packMutex, packagingAlgorithm, quantum)
+
+	// Generate 10 products with random arrival times
+	go utils.GenerateProducts(sched, 10, 500*time.Millisecond, 2*time.Second)
+
+	// Inserts the products from the scheduler into the first station 
+	go dispatcher.DispatchProducts(sched, ipc.Cutting)
+
+	var finishedProducts []*model.Product
+
+	for i := 0; i < 10; i++ {
+		product := <-ipc.Finished
+		finishedProducts = append(finishedProducts, product)
 	}
 
-	// inicia canal y lo envia al canal inicial
-	input <- product
-	close(input) // cierra el canal
+	// All products finished
+	results.PrintMetrics(finishedProducts)
 
-	// ejecuta la estación
-	go station.Station(constants.StationCutting, input, output, 2*time.Second)
-
-	// resultado del canal
-	result := <-output
-
-	fmt.Printf("Product %d processed!\n", result.Id)
-	fmt.Printf("Entered Cut: %v\n", result.EnteredCut)
-	fmt.Printf("Exited Cut: %v\n", result.ExitedCut)
+	select {}
 }
-
