@@ -40,8 +40,8 @@ func main() {
 	var finishedProducts []*model.Product
 
 	for i := 0; i < 10; i++ {
-		p := <-ipc.Finished
-		finishedProducts = append(finishedProducts, p)
+		product := <-ipc.Finished
+		finishedProducts = append(finishedProducts, product)
 	}
 
 	// All products finished
