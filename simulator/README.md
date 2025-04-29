@@ -10,8 +10,10 @@ go mod tidy
 
 ### Run the Simulator from the Project Root
 
+You must pass the scheduling algorithm as an argument:
+
 ```
-go run main.go
+go run cmd/simulator/main.go [fcfs|rr]
 ```
 
 ### Run the Simulator as Shown in the Video (from `simulator` folder)
@@ -19,7 +21,7 @@ go run main.go
 ```
 cd simulator
 go mod tidy
-go run ./cmd/simulator
+go run cmd/simulator/main.go [fcfs|rr]
 ```
 
 ## Explanation Video
