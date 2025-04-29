@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"sync"
 	"time"
+	"os"
 
 	"simulator/internal/constants"
 	"simulator/internal/dispatcher"
@@ -15,10 +17,21 @@ import (
 )
 
 func main() {
-	// Set the scheduling algorithm and quantum (if applicable), for each station
-	cuttingAlgorithm := "fcfs"
-	assemblingAlgorithm := "rr"
-	packagingAlgorithm := "fcfs"
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: go run main.go [fcfs|rr]")
+		return
+	}
+
+	mode := os.Args[1]
+
+	switch mode {
+	case "fcfs":
+		fmt.Println("Starting in FCFS mode")
+	case "rr":
+		fmt.Println("Starting in Round Robin mode")
+	default:
+		fmt.Printf("Invalid mode: %s. Use 'fcfs' or 'rr'.\n", mode)
+	}
 
 	quantum := 2 * time.Second
 
@@ -34,9 +47,9 @@ func main() {
 	sched := scheduler.NewFCFS()
 
 	// Creates the stations and defines its order
-	go station.Station(constants.StationCutting, ipc.Cutting, ipc.Assembling, utils.RandomDuration(constants.CuttingMinTime, constants.CuttingMaxTime), &cutMutex, cuttingAlgorithm, quantum)
-	go station.Station(constants.StationAssembling, ipc.Assembling, ipc.Packaging, utils.RandomDuration(constants.AssemblingMinTime, constants.AssemblingMaxTime), &assembleMutex, assemblingAlgorithm, quantum)
-	go station.Station(constants.StationPackaging, ipc.Packaging, nil, utils.RandomDuration(constants.PackagingMinTime, constants.PackagingMaxTime), &packMutex, packagingAlgorithm, quantum)
+	go station.Station(constants.StationCutting, ipc.Cutting, ipc.Assembling, utils.RandomDuration(constants.CuttingMinTime, constants.CuttingMaxTime), &cutMutex, mode, quantum)
+	go station.Station(constants.StationAssembling, ipc.Assembling, ipc.Packaging, utils.RandomDuration(constants.AssemblingMinTime, constants.AssemblingMaxTime), &assembleMutex, mode, quantum)
+	go station.Station(constants.StationPackaging, ipc.Packaging, nil, utils.RandomDuration(constants.PackagingMinTime, constants.PackagingMaxTime), &packMutex, mode, quantum)
 
 	// Generate 10 products with random arrival times
 	go utils.GenerateProducts(sched, 10, 500*time.Millisecond, 2*time.Second)
