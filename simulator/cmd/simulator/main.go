@@ -36,7 +36,7 @@ func main() {
 	quantum := 2 * time.Second
 
 	// Initialize the channels
-	ipc.InitChannels(5)
+	ipc.InitChannels(10)
 
 	// Create Mutex for synchronization
 	var cutMutex sync.Mutex
