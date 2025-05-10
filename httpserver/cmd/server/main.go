@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"simulator/internal/httpserver/handlers"
+	"httpserver/internal/handlers"
 )
 
 func main() {
