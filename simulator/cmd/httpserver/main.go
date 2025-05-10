@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"simulator/internal/httpserver/handlers"
+)
 
 func main() {
-    fmt.Println("hello world from httpserver module")
+	fmt.Println("Hora actual del sistema:", handlers.Timestamp())
 }
