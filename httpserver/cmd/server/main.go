@@ -1,10 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"httpserver/internal/handlers"
+	"log"
+
+	"httpserver/internal/tcp"
 )
 
 func main() {
-	fmt.Println("Hora actual del sistema:", handlers.Timestamp())
+	server, err := tcp.CreateTcpClient(":8080")
+	if err != nil {
+		log.Fatalf("Failed to start TCP server: %v", err)
+	}
+
+	for msg := range server.ReceiveChan {
+		log.Printf("[Received] Method: %s, Path: %s\n", msg.Method, msg.Path)
+	}
 }
