@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"errors"
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -17,13 +17,16 @@ func Fibonacci(n int) int {
 	return Fibonacci(n-1) + Fibonacci(n-2)
 }
 
-// /random?count=n&min=a&max=b: Genera n números aleatorios en el rango indicado.
+// /random?count=n&min=a&max=b: Returns a list of n random integers between min and max.
 func Random(count, min, max int) ([]int, error) {
 	if min > max {
-		return nil, errors.New("min no puede ser mayor que max")
+		return nil, fmt.Errorf("Invalid range: min (%d) cannot be greater than max (%d)", min, max)
 	}
 	if count <= 0 {
-		return nil, errors.New("count debe ser mayor que cero")
+		return nil, fmt.Errorf("Invalid count: must be greater than zero")
+	}
+	if (max - min + 1) <= 0 {
+		return nil, fmt.Errorf("Ivalid range")
 	}
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))

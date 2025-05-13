@@ -5,6 +5,14 @@ import (
 	"net"
 )
 
+type HTTPMessage struct {
+	Method  string
+	Path    string
+	Version string
+	Headers map[string]string
+	Body    string
+}
+
 type TCPClient struct {
 	ListenAddr  string
 	SendChan    chan string

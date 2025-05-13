@@ -2,9 +2,11 @@ package tcp
 
 import (
 	"bufio"
-	"fmt"
 	"net"
 	"strings"
+
+	"httpserver/internal/router"
+	"httpserver/internal/utils"
 )
 
 /**
@@ -16,21 +18,18 @@ func (client *TCPClient) handleConnection(connection net.Conn) {
 	defer connection.Close()
 	bufferedReader := bufio.NewReader(connection)
 
-	// Reads the HTTP request line
 	requestLine, err := bufferedReader.ReadString('\n')
 	if err != nil {
-		writeHTTPResponse(connection, "400 Bad Request", "Error reading request line")
+		utils.WriteHTTPResponse(connection, "400 Bad Request", "Error reading request line")
 		return
 	}
 
-	// Parse method, path, and HTTP version
-	method, path, version, ok := parseRequestLine(requestLine)
+	method, path, version, ok := utils.ParseRequestLine(requestLine)
 	if !ok {
-		writeHTTPResponse(connection, "400 Bad Request", " Error parsing the request line")
+		utils.WriteHTTPResponse(connection, "400 Bad Request", "Error parsing the request line")
 		return
 	}
 
-	// Parse headers
 	headers := make(map[string]string)
 	for {
 		line, err := bufferedReader.ReadString('\n')
@@ -45,7 +44,6 @@ func (client *TCPClient) handleConnection(connection net.Conn) {
 		}
 	}
 
-	// Creates the parsed HTTP request
 	message := HTTPMessage{
 		Method:  method,
 		Path:    path,
@@ -54,17 +52,6 @@ func (client *TCPClient) handleConnection(connection net.Conn) {
 	}
 	client.ReceiveChan <- message
 
-	var responseStatus string
-	var responseBody string
-
-	switch {
-	case path == "/status":
-		responseStatus = "200 OK"
-		responseBody = "Server is running"
-	default:
-		responseStatus = "404 Not Found"
-		responseBody = fmt.Sprintf("Unknown path: %s", path)
-	}
-
-	writeHTTPResponse(connection, responseStatus, responseBody)
+	// Router
+	router.HandleRoute(path, connection)
 }
