@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// /fibonacci?num=N: Cálculo recursivo del número N de la serie de Fibonacci.
+// /fibonacci?num=N: Returns the N number of the Fibonacci series.
 func Fibonacci(n int) (int, error) {
     if n <= 0 {
         return 0, fmt.Errorf("Invalid input: n (%d) must be greater than zero", n)
