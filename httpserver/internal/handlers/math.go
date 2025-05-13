@@ -7,7 +7,6 @@ import (
 )
 
 // /fibonacci?num=N: Cálculo recursivo del número N de la serie de Fibonacci.
-// Fibonacci calculates the Nth Fibonacci number using recursion.
 func Fibonacci(n int) (int, error) {
     if n <= 0 {
         return 0, fmt.Errorf("Invalid input: n (%d) must be greater than zero", n)
@@ -20,7 +19,6 @@ func Fibonacci(n int) (int, error) {
         return 1, nil
     }
 
-    // Recursive calculation of the Nth Fibonacci number
     prev, err1 := Fibonacci(n - 1)
     if err1 != nil {
         return 0, err1
