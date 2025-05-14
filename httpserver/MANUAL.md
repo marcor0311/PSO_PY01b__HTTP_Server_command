@@ -76,11 +76,3 @@ go test -cover ./...
 go test -coverprofile=coverage.out
 go tool cover -html=coverage.out
 ```
-
-
-## To Do (Testing)
-
-* Integration tests for TCP connection lifecycle
-* Mock time and hash for deterministic outputs
-* Test handlers like `/status`, `/createfile`, `/deletefile`
-* Load testing with `/simulate` and `/loadtest`
