@@ -1,0 +1,155 @@
+{
+  "info": {
+    "_postman_id": "f0f0f0f0-f0f0-4f0f-8f0f-f0f0f0f0f0f0",
+    "name": "HTTP Server - RedUnix API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "generated",
+    "description": "Postman collection for testing HTTP server endpoints"
+  },
+  "item": [
+    {
+      "name": "/fibonacci",
+      "item": [
+        {
+          "name": "Valid Fibonacci",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8080/fibonacci?num=10",
+              "host": [
+                "http://localhost:8080"
+              ],
+              "path": [
+                "fibonacci"
+              ],
+              "query": [
+                {
+                  "key": "num",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Missing Parameter",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/fibonacci"
+          }
+        },
+        {
+          "name": "Invalid Parameter",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/fibonacci?num=abc"
+          }
+        }
+      ]
+    },
+    {
+      "name": "/random",
+      "item": [
+        {
+          "name": "Valid Random",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/random?count=5&min=1&max=10"
+          }
+        },
+        {
+          "name": "Invalid Count",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/random?count=abc&min=1&max=10"
+          }
+        },
+        {
+          "name": "min > max",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/random?count=5&min=10&max=1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "/reverse",
+      "item": [
+        {
+          "name": "Valid Reverse",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/reverse?text=hello"
+          }
+        },
+        {
+          "name": "Missing Parameter",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/reverse"
+          }
+        }
+      ]
+    },
+    {
+      "name": "/toupper",
+      "item": [
+        {
+          "name": "Valid ToUpper",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/toupper?text=hello"
+          }
+        },
+        {
+          "name": "Missing Parameter",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/toupper"
+          }
+        }
+      ]
+    },
+    {
+      "name": "/hash",
+      "item": [
+        {
+          "name": "Valid Hash",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/hash?text=hello"
+          }
+        },
+        {
+          "name": "Missing Parameter",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/hash"
+          }
+        }
+      ]
+    },
+    {
+      "name": "/timestamp",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/timestamp"
+      }
+    },
+    {
+      "name": "/help",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/help"
+      }
+    },
+    {
+      "name": "/status",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/status"
+      }
+    }
+  ]
+}
