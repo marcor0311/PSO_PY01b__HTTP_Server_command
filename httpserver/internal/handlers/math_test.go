@@ -5,6 +5,43 @@ import (
 	"testing"
 )
 
+// Test cases for Fibonacci function
+func TestFibonacci_CountZero(t *testing.T) {
+	_, err := handlers.Fibonacci(0)
+	if err == nil {
+		t.Error("Expected error for n = 0, got nil")
+	}
+}
+
+func TestFibonacci_CountNegative(t *testing.T) {
+	_, err := handlers.Fibonacci(-5)
+	if err == nil {
+		t.Error("Expected error for negative n, got nil")
+	}
+}
+
+func TestFibonacci_CountOne(t *testing.T) {
+	result, err := handlers.Fibonacci(1)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+	if result != 0 {
+		t.Errorf("Expected 0, got %d", result)
+	}
+}
+
+func TestFibonacci_ValidRecursive(t *testing.T) {
+	result, err := handlers.Fibonacci(20)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+	expected := 4181 // 20th Fibonacci number
+	if result != expected {
+		t.Errorf("Expected %d, got %d", expected, result)
+	}
+}
+
+// Test cases for Random function
 func TestRandom_MinGreaterThanMax(t *testing.T) {
 	_, err := handlers.Random(3, 10, 5)
 	if err == nil {

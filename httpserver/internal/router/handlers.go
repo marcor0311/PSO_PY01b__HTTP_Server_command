@@ -11,8 +11,39 @@ import (
 )
 
 func handleFibonacci(conn net.Conn, path string) {
-	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Fibonacci")
+    // Extract query parameters from the path
+    query, err := utils.ExtractQuery(path)
+    if err != nil {
+        utils.WriteHTTPResponse(conn, "400 Bad Request", err.Error())
+        return
+    }
+
+    // Get the "num" parameter
+    numStr := query.Get("num")
+    if numStr == "" {
+        utils.WriteHTTPResponse(conn, "400 Bad Request", "Missing 'num' query parameter")
+        return
+    }
+
+    // Convert "num" to an integer
+    num, err := strconv.Atoi(numStr)
+    if err != nil || num <= 0 {
+        utils.WriteHTTPResponse(conn, "400 Bad Request", "'num' must be a positive integer")
+        return
+    }
+
+    // Calculate the Nth Fibonacci number
+    result, err := handlers.Fibonacci(num)
+    if err != nil {
+        utils.WriteHTTPResponse(conn, "400 Bad Request", err.Error())
+        return
+    }
+
+    // Format the response
+    response := fmt.Sprintf("The %d Fibonacci number is: %d", num, result)
+    utils.WriteHTTPResponse(conn, "200 OK", response)
 }
+
 func handleCreateFile(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Create File")
 }
