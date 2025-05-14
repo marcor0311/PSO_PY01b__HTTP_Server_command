@@ -3,8 +3,10 @@ package utils
 import (
 	"fmt"
 	"net"
-	"strings"
 	"net/url"
+	"strings"
+	
+	"httpserver/internal/constants"
 )
 
 /**
@@ -28,7 +30,7 @@ func ParseRequestLine(line string) (method, path, version string, ok bool) {
  * Includes status, headers and body.
  *
  * @param {net.Conn} conn - The TCP connection to write the response to.
- * @param {string} status - HTTP status line (e.g., "200 OK").
+ * @param {string} status - HTTP status line (e.g., "constants.StatusOK").
  * @param {string} body - The plain text body to send in the response.
  */
 func WriteHTTPResponse(conn net.Conn, status, body string) {
@@ -61,6 +63,6 @@ func ExtractQuery(path string) (url.Values, error) {
 // RecoverAndRespond catches a system error and sends a 500 response.
 func RecoverAndRespond(conn net.Conn) {
 	if r := recover(); r != nil {
-		WriteHTTPResponse(conn, "500 Internal Server Error", fmt.Sprintf("Internal server error: %v", r))
+		WriteHTTPResponse(conn, constants.StatusInternalServerError , fmt.Sprintf("Internal server error: %v", r))
 	}
 }

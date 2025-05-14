@@ -5,6 +5,7 @@ import (
 	"net"
 	"strings"
 
+	"httpserver/internal/constants"
 	"httpserver/internal/router"
 	"httpserver/internal/utils"
 )
@@ -20,13 +21,13 @@ func (client *TCPClient) handleConnection(connection net.Conn) {
 
 	requestLine, err := bufferedReader.ReadString('\n')
 	if err != nil {
-		utils.WriteHTTPResponse(connection, "400 Bad Request", "Error reading request line")
+		utils.WriteHTTPResponse(connection, constants.StatusBadRequest, "Error reading request line")
 		return
 	}
 
 	method, path, version, ok := utils.ParseRequestLine(requestLine)
 	if !ok {
-		utils.WriteHTTPResponse(connection, "400 Bad Request", "Error parsing the request line")
+		utils.WriteHTTPResponse(connection, constants.StatusBadRequest, "Error parsing the request line")
 		return
 	}
 

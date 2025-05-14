@@ -6,11 +6,11 @@ import (
 	"path/filepath"
 )
 
-// /createfile?name=filename&content=text&repeat=x: Genera un archivo escribiendo el texto dado x veces.
+// /createfile?name=filename&content=text&repeat=x: Generates a file by writing the given text x times.
 func CreateFile(name, content string, repeat int) error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return fmt.Errorf("no se pudo obtener el directorio del usuario: %w", err)
+		return fmt.Errorf("could not get user's home directory: %w", err)
 	}
 
 	downloadsPath := filepath.Join(homeDir, "Downloads")
@@ -18,14 +18,14 @@ func CreateFile(name, content string, repeat int) error {
 
 	f, err := os.Create(fullPath)
 	if err != nil {
-		return fmt.Errorf("error al crear archivo en Downloads: %w", err)
+		return fmt.Errorf("error creating file in Downloads: %w", err)
 	}
 	defer f.Close()
 
 	for i := 0; i < repeat; i++ {
 		_, err := f.WriteString(content + "\n")
 		if err != nil {
-			return fmt.Errorf("error al escribir en archivo: %w", err)
+			return fmt.Errorf("error writing to file: %w", err)
 		}
 	}
 
@@ -36,14 +36,14 @@ func CreateFile(name, content string, repeat int) error {
 func DeleteFile(name string) error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		return fmt.Errorf("no se pudo obtener el directorio del usuario: %w", err)
+		return fmt.Errorf("could not get user's home directory: %w", err)
 	}
 
 	fullPath := filepath.Join(homeDir, "Downloads", name)
 
 	err = os.Remove(fullPath)
 	if err != nil {
-		return fmt.Errorf("error al eliminar archivo en Downloads: %w", err)
+		return fmt.Errorf("error deleting file in Downloads: %w", err)
 	}
 	return nil
 }

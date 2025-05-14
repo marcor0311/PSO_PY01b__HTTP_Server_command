@@ -15,3 +15,10 @@ const (
 	RouteHelp       = "/help"
 	RouteStatus     = "/status"
 )
+
+const (
+	StatusOK                  = "200 OK"
+	StatusBadRequest          = "400 Bad Request"
+	StatusNotFound            = "404 Not Found"
+	StatusInternalServerError = "500 Internal Server Error"
+)
