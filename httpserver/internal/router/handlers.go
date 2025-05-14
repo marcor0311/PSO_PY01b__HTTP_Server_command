@@ -151,7 +151,7 @@ func handleHelp(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, "200 OK", help)
 }
 
-
+// Create file handler
 func handleCreateFile(conn net.Conn, path string) {
 	query, err := utils.ExtractQuery(path)
 	if err != nil {
@@ -183,6 +183,7 @@ func handleCreateFile(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, "200 OK", fmt.Sprintf("File '%s' created successfully", name))
 }
 
+// Delete file handler
 func handleDeleteFile(conn net.Conn, path string) {
 	query, err := utils.ExtractQuery(path)
 	if err != nil {
@@ -205,10 +206,57 @@ func handleDeleteFile(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, "200 OK", fmt.Sprintf("File '%s' deleted successfully", name))
 }
 
+// Simulate task handler
 func handleSimulate(conn net.Conn, path string) {
-	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Simulate Task")
+	query, err := utils.ExtractQuery(path)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "Invalid query format")
+		return
+	}
+
+	secondsStr := query.Get("seconds")
+	task := query.Get("task")
+
+	if secondsStr == "" || task == "" {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "Missing 'seconds' or 'task' parameter")
+		return
+	}
+
+	seconds, err := strconv.Atoi(secondsStr)
+	if err != nil || seconds < 1 {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "'seconds' must be a positive integer")
+		return
+	}
+
+	message := handlers.SimulateTask(seconds, task)
+	utils.WriteHTTPResponse(conn, "200 OK", message)
 }
-func handleSleep(conn net.Conn, path string) { utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Sleep") }
+
+// Sleep handler
+func handleSleep(conn net.Conn, path string) {
+	query, err := utils.ExtractQuery(path)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "Invalid query format")
+		return
+	}
+
+	secondsStr := query.Get("seconds")
+	if secondsStr == "" {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "Missing 'seconds' parameter")
+		return
+	}
+
+	seconds, err := strconv.Atoi(secondsStr)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "'seconds' must be a positive integer")
+		return
+	}
+
+	message := handlers.Sleep(seconds)
+	utils.WriteHTTPResponse(conn, "200 OK", message)
+}
+
+
 func handleLoadTest(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Load Test")
 }
