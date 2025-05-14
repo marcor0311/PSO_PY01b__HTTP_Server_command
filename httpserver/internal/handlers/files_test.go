@@ -8,7 +8,6 @@ import (
 	"httpserver/internal/handlers"
 )
 
-// Helper para obtener ruta completa en ~/Downloads
 func getTestFilePath(name string) string {
 	home, _ := os.UserHomeDir()
 	return filepath.Join(home, "Downloads", name)
@@ -18,7 +17,6 @@ func TestCreateFile_Basic(t *testing.T) {
 	filename := "test_createfile.txt"
 	fullPath := getTestFilePath(filename)
 
-	// Asegúrate de eliminar si ya existe
 	os.Remove(fullPath)
 
 	err := handlers.CreateFile(filename, "contenido de prueba", 3)
@@ -26,7 +24,6 @@ func TestCreateFile_Basic(t *testing.T) {
 		t.Fatalf("Error while creating file: %v", err)
 	}
 
-	// Verifica que el archivo exista
 	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
 		t.Errorf("File %s was not created", fullPath)
 	}
