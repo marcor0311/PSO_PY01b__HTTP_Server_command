@@ -56,3 +56,10 @@ func ExtractQuery(path string) (url.Values, error) {
 	}
 	return query, nil
 }
+
+// RecoverAndRespond catches a system error and sends a 500 response.
+func RecoverAndRespond(conn net.Conn) {
+	if r := recover(); r != nil {
+		WriteHTTPResponse(conn, "500 Internal Server Error", fmt.Sprintf("Internal server error: %v", r))
+	}
+}

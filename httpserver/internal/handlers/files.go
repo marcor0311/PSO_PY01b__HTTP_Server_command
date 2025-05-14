@@ -31,6 +31,7 @@ func CreateFile(name, content string, repeat int) error {
 
 	return nil
 }
+
 // /deletefile?name=filename: Elimina el archivo especificado si existe.
 func DeleteFile(name string) error {
 	homeDir, err := os.UserHomeDir()

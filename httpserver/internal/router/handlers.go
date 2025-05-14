@@ -10,55 +10,42 @@ import (
 
 )
 
+// Fibonacci number handler
 func handleFibonacci(conn net.Conn, path string) {
-    // Extract query parameters from the path
+	defer utils.RecoverAndRespond(conn)
+
     query, err := utils.ExtractQuery(path)
     if err != nil {
         utils.WriteHTTPResponse(conn, "400 Bad Request", err.Error())
         return
     }
 
-    // Get the "num" parameter
     numStr := query.Get("num")
     if numStr == "" {
         utils.WriteHTTPResponse(conn, "400 Bad Request", "Missing 'num' query parameter")
         return
     }
 
-    // Convert "num" to an integer
     num, err := strconv.Atoi(numStr)
     if err != nil || num <= 0 {
         utils.WriteHTTPResponse(conn, "400 Bad Request", "'num' must be a positive integer")
         return
     }
 
-    // Calculate the Nth Fibonacci number
     result, err := handlers.Fibonacci(num)
     if err != nil {
         utils.WriteHTTPResponse(conn, "400 Bad Request", err.Error())
         return
     }
 
-    // Format the response
     response := fmt.Sprintf("The %d Fibonacci number is: %d", num, result)
     utils.WriteHTTPResponse(conn, "200 OK", response)
 }
 
-func handleCreateFile(conn net.Conn, path string) {
-	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Create File")
-}
-func handleDeleteFile(conn net.Conn, path string) {
-	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Delete File")
-}
-func handleReverse(conn net.Conn, path string) {
-	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Reverse Text")
-}
-func handleToUpper(conn net.Conn, path string) {
-	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] To Upper")
-}
-
 // Random number handler
 func handleRandom(conn net.Conn, path string) {
+	defer utils.RecoverAndRespond(conn)
+
 	query, err := utils.ExtractQuery(path)
 	if err != nil {
 		utils.WriteHTTPResponse(conn, "400 Bad Request", err.Error())
@@ -88,10 +75,87 @@ func handleRandom(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, "200 OK", response)
 }
 
-func handleTimestamp(conn net.Conn, path string) {
-	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Timestamp")
+// Reverse string handler
+func handleReverse(conn net.Conn, path string) {
+	defer utils.RecoverAndRespond(conn)
+
+	query, err := utils.ExtractQuery(path)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", err.Error())
+		return
+	}
+
+	text := query.Get("text")
+	if text == "" {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "Missing 'text' parameter")
+		return
+	}
+
+	reversed := handlers.ReverseString(text)
+	utils.WriteHTTPResponse(conn, "200 OK", reversed)
 }
-func handleHash(conn net.Conn, path string) { utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Hash") }
+
+// To uppercase handler
+func handleToUpper(conn net.Conn, path string) {
+	defer utils.RecoverAndRespond(conn)
+
+	query, err := utils.ExtractQuery(path)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", err.Error())
+		return
+	}
+	text := query.Get("text")
+	if text == "" {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "Missing 'text' parameter")
+		return
+	}
+	upper := handlers.ToUpper(text)
+	utils.WriteHTTPResponse(conn, "200 OK", upper)
+}
+
+// Hash converter handler 
+func handleHash(conn net.Conn, path string) {
+	defer utils.RecoverAndRespond(conn)
+
+	query, err := utils.ExtractQuery(path)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", err.Error())
+		return
+	}
+
+	text := query.Get("text")
+	if text == "" {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "Missing 'text' parameter")
+		return
+	}
+
+	hash := handlers.HashSHA256(text)
+	utils.WriteHTTPResponse(conn, "200 OK", hash)
+}
+
+// Time stamp handler
+func handleTimestamp(conn net.Conn, path string) {
+	defer utils.RecoverAndRespond(conn)
+
+	timestamp := handlers.Timestamp()
+	utils.WriteHTTPResponse(conn, "200 OK", timestamp)
+}
+
+// Help handler
+func handleHelp(conn net.Conn, path string) {
+	defer utils.RecoverAndRespond(conn)
+
+	help := handlers.HelpText()
+	utils.WriteHTTPResponse(conn, "200 OK", help)
+}
+
+
+func handleCreateFile(conn net.Conn, path string) {
+	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Create File")
+}
+func handleDeleteFile(conn net.Conn, path string) {
+	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Delete File")
+}
 func handleSimulate(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Simulate Task")
 }
@@ -99,7 +163,6 @@ func handleSleep(conn net.Conn, path string) { utils.WriteHTTPResponse(conn, "20
 func handleLoadTest(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Load Test")
 }
-func handleHelp(conn net.Conn, path string) { utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Help") }
 func handleStatus(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, "200 OK", "Server is running")
 }
