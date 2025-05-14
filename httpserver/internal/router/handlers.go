@@ -91,8 +91,8 @@ func handleReverse(conn net.Conn, path string) {
 		return
 	}
 
-	reversed := handlers.ReverseString(text)
-	utils.WriteHTTPResponse(conn, "200 OK", reversed)
+	reversedText := handlers.ReverseString(text)
+	utils.WriteHTTPResponse(conn, "200 OK", reversedText)
 }
 
 // To uppercase handler
@@ -104,13 +104,15 @@ func handleToUpper(conn net.Conn, path string) {
 		utils.WriteHTTPResponse(conn, "400 Bad Request", err.Error())
 		return
 	}
+
 	text := query.Get("text")
 	if text == "" {
 		utils.WriteHTTPResponse(conn, "400 Bad Request", "Missing 'text' parameter")
 		return
 	}
-	upper := handlers.ToUpper(text)
-	utils.WriteHTTPResponse(conn, "200 OK", upper)
+
+	upperText := handlers.ToUpper(text)
+	utils.WriteHTTPResponse(conn, "200 OK", upperText)
 }
 
 // Hash converter handler 

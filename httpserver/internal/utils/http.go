@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net"
 	"strings"
-	"errors"
 	"net/url"
 )
 
@@ -48,12 +47,14 @@ func WriteHTTPResponse(conn net.Conn, status, body string) {
 func ExtractQuery(path string) (url.Values, error) {
 	parts := strings.SplitN(path, "?", 2)
 	if len(parts) != 2 {
-		return nil, errors.New("Missing query parameters")
+		return nil, fmt.Errorf("missing query parameters in path: %q", path)
 	}
+
 	query, err := url.ParseQuery(parts[1])
 	if err != nil {
-		return nil, errors.New("Invalid query format")
+		return nil, fmt.Errorf("invalid query format: %v", err)
 	}
+
 	return query, nil
 }
 
