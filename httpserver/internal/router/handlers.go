@@ -153,11 +153,58 @@ func handleHelp(conn net.Conn, path string) {
 
 
 func handleCreateFile(conn net.Conn, path string) {
-	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Create File")
+	query, err := utils.ExtractQuery(path)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", err.Error())
+		return
+	}
+
+	name := query.Get("name")
+	content := query.Get("content")
+	repeatStr := query.Get("repeat")
+
+	if name == "" || content == "" || repeatStr == "" {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "Missing 'name', 'content', or 'repeat' parameter")
+		return
+	}
+
+	repeat, err := strconv.Atoi(repeatStr)
+	if err != nil || repeat < 1 {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "'repeat' has to be a positive integer")
+		return
+	}
+
+	err = handlers.CreateFile(name, content, repeat)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, "500 Internal Server Error", err.Error())
+		return
+	}
+
+	utils.WriteHTTPResponse(conn, "200 OK", fmt.Sprintf("File '%s' created successfully", name))
 }
+
 func handleDeleteFile(conn net.Conn, path string) {
-	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Delete File")
+	query, err := utils.ExtractQuery(path)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", err.Error())
+		return
+	}
+
+	name := query.Get("name")
+	if name == "" {
+		utils.WriteHTTPResponse(conn, "400 Bad Request", "Missing 'name' parameter")
+		return
+	}
+
+	err = handlers.DeleteFile(name)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, "500 Internal Server Error", err.Error())
+		return
+	}
+
+	utils.WriteHTTPResponse(conn, "200 OK", fmt.Sprintf("File '%s' deleted successfully", name))
 }
+
 func handleSimulate(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, "200 OK", "[TODO] Simulate Task")
 }
