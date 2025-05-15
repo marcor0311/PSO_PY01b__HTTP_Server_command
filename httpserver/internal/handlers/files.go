@@ -11,6 +11,7 @@ var fileLock sync.Mutex
 
 // /createfile?name=filename&content=text&repeat=x: Generates a file by writing the given text x times.
 func CreateFile(name, content string, repeat int) error {
+	// Locking to ensure safe concurrent access to the file system.
 	fileLock.Lock()
 	defer fileLock.Unlock()
 
