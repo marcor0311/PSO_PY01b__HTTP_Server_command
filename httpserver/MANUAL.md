@@ -76,3 +76,27 @@ go test -cover ./...
 go test -coverprofile=coverage.out
 go tool cover -html=coverage.out
 ```
+
+# App Architecture 
+```
+httpserver/
+├── main.go                  // Entry point, starts TCP server
+├── internal/
+│   ├── constants/
+│   │   └── constants.go     // Route constants and common values
+│   ├── handlers/
+│   │   ├── fibonacci.go     // Handler for /fibonacci
+│   │   ├── random.go        // Handler for /random
+│   │   ├── reverse.go       // Handler for /reverse
+│   │   ├── file.go          // Handlers for /createfile, /deletefile
+│   │   ├── status.go        // Handler for /status
+│   │   └── simulate.go      // Handler for /simulate
+│   ├── router/
+│   │   └── router.go        // Routes HTTP requests to handlers
+│   ├── server/
+│   │   └── server.go        // TCP listener, reads/parses HTTP requests
+│   └── utils/
+│       └── recover.go       // RecoverAndRespond and other helpers
+├── go.mod
+└── README.md
+```
