@@ -63,18 +63,11 @@ curl "http://localhost:8080/help"
 | `/sleep?seconds=n`                      | Sleeps the server                          |
 | `/loadtest?tasks=n&sleep=s`             | Simulate concurrent requests               |
 
-## Running Unit Tests
-
-```bash
-go test -v ./...
-```
 
 ## Test Coverage Report
 
 ```bash
 go test -cover ./...
-go test -coverprofile=coverage.out
-go tool cover -html=coverage.out
 ```
 
 # App Architecture 
