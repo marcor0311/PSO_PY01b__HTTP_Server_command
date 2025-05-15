@@ -80,23 +80,39 @@ go tool cover -html=coverage.out
 # App Architecture 
 ```
 httpserver/
-├── main.go                  // Entry point, starts TCP server
+│   └── go.mod
+│   └── MANUAL.md
+├── cmd/
+│   └── server/
+│       └── main.go
 ├── internal/
 │   ├── constants/
-│   │   └── constants.go     // Route constants and common values
+│   │   └── constants.go
 │   ├── handlers/
-│   │   ├── fibonacci.go     // Handler for /fibonacci
-│   │   ├── random.go        // Handler for /random
-│   │   ├── reverse.go       // Handler for /reverse
-│   │   ├── file.go          // Handlers for /createfile, /deletefile
-│   │   ├── status.go        // Handler for /status
-│   │   └── simulate.go      // Handler for /simulate
+│   │   └── files.go
+│   │   └── files_test.go
+│   │   └── help.go
+│   │   └── help_test.go
+│   │   └── math.go
+│   │   └── math_test.go
+│   │   └── simulate.go
+│   │   └── simulate_test.go
+│   │   └── status.go
+│   │   └── status_test.go
+│   │   └── strings.go
+│   │   └── strings_test.go
+│   │   └── system.go
+│   │   └── system_test.go
 │   ├── router/
-│   │   └── router.go        // Routes HTTP requests to handlers
-│   ├── server/
-│   │   └── server.go        // TCP listener, reads/parses HTTP requests
-│   └── utils/
-│       └── recover.go       // RecoverAndRespond and other helpers
-├── go.mod
-└── README.md
+│   │   └── handlers.go
+│   │   └── router.go
+│   ├── tcp/
+│   │   └── client.go
+│   │   └── connection.go
+│   ├── utils/
+        └── http_test.go
+│   │   └── http.go
+└──  postman/
+    └── server.postman_collection.json
+
 ```
