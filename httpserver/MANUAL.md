@@ -42,7 +42,7 @@ curl "http://localhost:8080/help"
 ## Testing with Postman
 
 1. Open Postman
-2. Click "Import" → "File" → Select `redunix_api_collection.postman_collection.json`
+2. Click "Import" → "File" → Select `server.postman_collection.json`
 3. Use the saved examples to test each route
 
 ## Available Endpoints
@@ -56,20 +56,20 @@ curl "http://localhost:8080/help"
 | `/hash?text=abc`                        | Returns the SHA-256 hash of the input      |
 | `/timestamp`                            | Returns current server time (RFC3339)      |
 | `/help`                                 | Lists all available endpoints              |
-| `/status`                               | (To Do) Server status, uptime, request log |
-| `/createfile?name=x&content=y&repeat=z` | (To Do) Create a file                      |
-| `/deletefile?name=x`                    | (To Do) Delete a file                      |
-| `/simulate?seconds=s&task=x`            | (To Do) Simulate blocking task             |
-| `/sleep?seconds=n`                      | (To Do) Sleep the server                   |
-| `/loadtest?tasks=n&sleep=s`             | (To Do) Simulate concurrent requests       |
+| `/status`                               | Server status, uptime, request log         |
+| `/createfile?name=x&content=y&repeat=z` | Creates a file                             |
+| `/deletefile?name=x`                    | Deletes a file                             |
+| `/simulate?seconds=s&task=x`            | Simulates blocking task                    |
+| `/sleep?seconds=n`                      | Sleeps the server                          |
+| `/loadtest?tasks=n&sleep=s`             | Simulate concurrent requests               |
 
-## To Do Running Unit Tests
+## Running Unit Tests
 
 ```bash
 go test -v ./...
 ```
 
-## To Do Test Coverage Report
+## Test Coverage Report
 
 ```bash
 go test -cover ./...
