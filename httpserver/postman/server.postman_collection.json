@@ -1,341 +1,586 @@
 {
-  "info": {
-    "name": "HTTP Server - OS Project",
-    "_postman_id": "12345678-1234-5678-1234-567812345678",
-    "description": "Postman collection for testing custom HTTP/1.0 server endpoints",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "variable": [
-    {
-      "key": "host",
-      "value": "localhost:8080"
-    }
-  ],
-  "item": [
-    {
-      "name": "Math",
-      "item": [
-        {
-          "name": "GET /fibonacci",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/fibonacci",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "fibonacci"
-              ],
-              "query": [
-                {
-                  "key": "num",
-                  "value": "10"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "GET /random",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/random",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "random"
-              ],
-              "query": [
-                {
-                  "key": "count",
-                  "value": "5"
-                },
-                {
-                  "key": "min",
-                  "value": "1"
-                },
-                {
-                  "key": "max",
-                  "value": "100"
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Text",
-      "item": [
-        {
-          "name": "GET /reverse",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/reverse",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "reverse"
-              ],
-              "query": [
-                {
-                  "key": "text",
-                  "value": "example"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "GET /toupper",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/toupper",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "toupper"
-              ],
-              "query": [
-                {
-                  "key": "text",
-                  "value": "hello"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "GET /hash",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/hash",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "hash"
-              ],
-              "query": [
-                {
-                  "key": "text",
-                  "value": "someinput"
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "File",
-      "item": [
-        {
-          "name": "GET /createfile",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/createfile",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "createfile"
-              ],
-              "query": [
-                {
-                  "key": "name",
-                  "value": "test.txt"
-                },
-                {
-                  "key": "content",
-                  "value": "Hello"
-                },
-                {
-                  "key": "repeat",
-                  "value": "3"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "GET /deletefile",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/deletefile",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "deletefile"
-              ],
-              "query": [
-                {
-                  "key": "name",
-                  "value": "test.txt"
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Time",
-      "item": [
-        {
-          "name": "GET /timestamp",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/timestamp",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "timestamp"
-              ],
-              "query": []
-            }
-          }
-        },
-        {
-          "name": "GET /sleep",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/sleep",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "sleep"
-              ],
-              "query": [
-                {
-                  "key": "seconds",
-                  "value": "2"
-                }
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "System",
-      "item": [
-        {
-          "name": "GET /status",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/status",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "status"
-              ],
-              "query": []
-            }
-          }
-        },
-        {
-          "name": "GET /help",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/help",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "help"
-              ],
-              "query": []
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Simulation",
-      "item": [
-        {
-          "name": "GET /simulate",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/simulate",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "simulate"
-              ],
-              "query": [
-                {
-                  "key": "seconds",
-                  "value": "3"
-                },
-                {
-                  "key": "task",
-                  "value": "load"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "name": "GET /loadtest",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{host}}/loadtest",
-              "host": [
-                "{{host}}"
-              ],
-              "path": [
-                "loadtest"
-              ],
-              "query": [
-                {
-                  "key": "tasks",
-                  "value": "5"
-                },
-                {
-                  "key": "sleep",
-                  "value": "1"
-                }
-              ]
-            }
-          }
-        }
-      ]
-    }
-  ]
+	"info": {
+		"_postman_id": "56697b3b-e0e4-4945-9db3-0d1309868124",
+		"name": "HTTP Server - OS Project",
+		"description": "Postman collection for testing custom HTTP/1.0 server endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "8017687",
+		"_collection_link": "https://dark-shuttle-7932.postman.co/workspace/Team-Workspace~b90319a6-8530-4016-80b8-c38667872204/collection/8017687-56697b3b-e0e4-4945-9db3-0d1309868124?action=share&source=collection_link&creator=8017687"
+	},
+	"item": [
+		{
+			"name": "createfile",
+			"item": [
+				{
+					"name": "GET /createfile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/createfile?name=test.txt&content=Hello&repeat=3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"createfile"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "test.txt"
+								},
+								{
+									"key": "content",
+									"value": "Hello"
+								},
+								{
+									"key": "repeat",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /createfile - Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/createfile?name=bad.txt&repeat=abc",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"createfile"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "bad.txt"
+								},
+								{
+									"key": "repeat",
+									"value": "abc"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "deletefile",
+			"item": [
+				{
+					"name": "GET /deletefile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/deletefile?name=test.txt",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"deletefile"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "test.txt"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /deletefile - Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/deletefile"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "fibonacci",
+			"item": [
+				{
+					"name": "GET /fibonacci",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/fibonacci?num=10",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"fibonacci"
+							],
+							"query": [
+								{
+									"key": "num",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /fibonacci - Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/fibonacci?num=-5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"fibonacci"
+							],
+							"query": [
+								{
+									"key": "num",
+									"value": "-5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "hash",
+			"item": [
+				{
+					"name": "GET /hash",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/hash?text=someinput",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"hash"
+							],
+							"query": [
+								{
+									"key": "text",
+									"value": "someinput"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /hash - Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/hash"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "help",
+			"item": [
+				{
+					"name": "GET /help",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/help"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "loadtest",
+			"item": [
+				{
+					"name": "GET /loadtest",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/loadtest?tasks=5&sleep=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"loadtest"
+							],
+							"query": [
+								{
+									"key": "tasks",
+									"value": "5"
+								},
+								{
+									"key": "sleep",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "random",
+			"item": [
+				{
+					"name": "GET /random",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/random?count=5&min=1&max=100",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"random"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "5"
+								},
+								{
+									"key": "min",
+									"value": "1"
+								},
+								{
+									"key": "max",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /random - Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/random?count=abc&min=1&max=10",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"random"
+							],
+							"query": [
+								{
+									"key": "count",
+									"value": "abc"
+								},
+								{
+									"key": "min",
+									"value": "1"
+								},
+								{
+									"key": "max",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reverse",
+			"item": [
+				{
+					"name": "GET /reverse",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/reverse?text=example",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"reverse"
+							],
+							"query": [
+								{
+									"key": "text",
+									"value": "example"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /reverse - Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/reverse"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "simulate",
+			"item": [
+				{
+					"name": "GET /simulate",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/simulate?seconds=3&task=load",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"simulate"
+							],
+							"query": [
+								{
+									"key": "seconds",
+									"value": "3"
+								},
+								{
+									"key": "task",
+									"value": "load"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /simulate - Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/simulate?seconds=-1&task=t1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"simulate"
+							],
+							"query": [
+								{
+									"key": "seconds",
+									"value": "-1"
+								},
+								{
+									"key": "task",
+									"value": "t1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /simulate - Error 2",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/simulate?task=t1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"simulate"
+							],
+							"query": [
+								{
+									"key": "task",
+									"value": "t1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "sleep",
+			"item": [
+				{
+					"name": "GET /sleep",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/sleep?seconds=20",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"sleep"
+							],
+							"query": [
+								{
+									"key": "seconds",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /sleep 1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/sleep?seconds=2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"sleep"
+							],
+							"query": [
+								{
+									"key": "seconds",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /sleep 2",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/sleep?seconds=2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"sleep"
+							],
+							"query": [
+								{
+									"key": "seconds",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /sleep - Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/sleep"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "status",
+			"item": [
+				{
+					"name": "GET /status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/status"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "timestamp",
+			"item": [
+				{
+					"name": "GET /timestamp",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/timestamp"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "toupper",
+			"item": [
+				{
+					"name": "GET /toupper",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/toupper?text=hello",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"toupper"
+							],
+							"query": [
+								{
+									"key": "text",
+									"value": "hello"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /toupper - Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{host}}/toupper"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "localhost:8080"
+		}
+	]
 }
