@@ -4,10 +4,16 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 )
+
+var fileLock sync.Mutex
 
 // /createfile?name=filename&content=text&repeat=x: Generates a file by writing the given text x times.
 func CreateFile(name, content string, repeat int) error {
+	fileLock.Lock()
+	defer fileLock.Unlock()
+
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return fmt.Errorf("could not get user's home directory: %w", err)
@@ -34,6 +40,9 @@ func CreateFile(name, content string, repeat int) error {
 
 // /deletefile?name=filename: Elimina el archivo especificado si existe.
 func DeleteFile(name string) error {
+	fileLock.Lock()
+	defer fileLock.Unlock()
+
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return fmt.Errorf("could not get user's home directory: %w", err)
