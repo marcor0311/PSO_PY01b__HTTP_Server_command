@@ -75,3 +75,40 @@ func TestSleep_NegativeSeconds(t *testing.T) {
 		t.Errorf("Expected error message for negative seconds, got: %s", message)
 	}
 }
+
+// Load Test
+
+func TestSimulateLoad_ValidInput(t *testing.T) {
+	tasks := 3
+	sleepSec := 1
+
+	start := time.Now()
+	duration, err := handlers.SimulateLoad(tasks, sleepSec)
+	elapsed := time.Since(start)
+
+	if err != nil {
+		t.Fatalf("Expected no error, got: %v", err)
+	}
+
+	if duration < time.Second {
+		t.Errorf("Expected duration >= 1s, got: %v", duration)
+	}
+
+	if elapsed < time.Second {
+		t.Errorf("Expected test to run for at least 1s, got: %v", elapsed)
+	}
+}
+
+func TestSimulateLoad_InvalidTasks(t *testing.T) {
+	_, err := handlers.SimulateLoad(0, 1)
+	if err == nil {
+		t.Errorf("Expected error for zero tasks, got nil")
+	}
+}
+
+func TestSimulateLoad_InvalidSleep(t *testing.T) {
+	_, err := handlers.SimulateLoad(5, -1)
+	if err == nil {
+		t.Errorf("Expected error for negative sleep, got nil")
+	}
+}
