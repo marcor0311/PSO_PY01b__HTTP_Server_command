@@ -187,6 +187,8 @@ func handleCreateFile(conn net.Conn, path string) {
 
 // Delete file handler
 func handleDeleteFile(conn net.Conn, path string) {
+	defer utils.RecoverAndRespond(conn)
+
 	query, err := utils.ExtractQuery(path)
 	if err != nil {
 		utils.WriteHTTPResponse(conn, constants.StatusBadRequest, err.Error())
@@ -210,9 +212,11 @@ func handleDeleteFile(conn net.Conn, path string) {
 
 // Simulate task handler
 func handleSimulate(conn net.Conn, path string) {
+	defer utils.RecoverAndRespond(conn)
+
 	query, err := utils.ExtractQuery(path)
 	if err != nil {
-		utils.WriteHTTPResponse(conn, constants.StatusBadRequest, "Invalid query format")
+		utils.WriteHTTPResponse(conn, constants.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -236,9 +240,11 @@ func handleSimulate(conn net.Conn, path string) {
 
 // Sleep handler
 func handleSleep(conn net.Conn, path string) {
+	defer utils.RecoverAndRespond(conn)
+
 	query, err := utils.ExtractQuery(path)
 	if err != nil {
-		utils.WriteHTTPResponse(conn, constants.StatusBadRequest, "Invalid query format")
+		utils.WriteHTTPResponse(conn, constants.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -258,9 +264,46 @@ func handleSleep(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, constants.StatusOK, message)
 }
 
+// /loadtest?tasks=n&sleep=s
 func handleLoadTest(conn net.Conn, path string) {
-	utils.WriteHTTPResponse(conn, constants.StatusOK, "[TODO] Load Test")
+	defer utils.RecoverAndRespond(conn)
+
+	query, err := utils.ExtractQuery(path)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, constants.StatusBadRequest, err.Error())
+		return
+	}
+
+	tasksStr := query.Get("tasks")
+	sleepStr := query.Get("sleep")
+
+	if tasksStr == "" || sleepStr == "" {
+		utils.WriteHTTPResponse(conn, constants.StatusBadRequest, "Missing 'tasks' or 'sleep' parameter")
+		return
+	}
+
+	tasks, err := strconv.Atoi(tasksStr)
+	if err != nil || tasks <= 0 {
+		utils.WriteHTTPResponse(conn, constants.StatusBadRequest, "'tasks' must be a positive integer")
+		return
+	}
+
+	sleepSec, err := strconv.Atoi(sleepStr)
+	if err != nil || sleepSec < 0 {
+		utils.WriteHTTPResponse(conn, constants.StatusBadRequest, "'sleep' must be a non-negative integer")
+		return
+	}
+
+	duration, err := handlers.SimulateLoad(tasks, sleepSec)
+	if err != nil {
+		utils.WriteHTTPResponse(conn, constants.StatusInternalServerError, err.Error())
+		return
+	}
+
+	message := "Simulated " + strconv.Itoa(tasks) + " tasks with " + strconv.Itoa(sleepSec) + "s sleep each.\nTotal time: " + duration.String()
+	utils.WriteHTTPResponse(conn, constants.StatusOK, message)
 }
+
 func handleStatus(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, constants.StatusOK, "Server is running")
 }
