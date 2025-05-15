@@ -41,6 +41,7 @@ func CreateFile(name, content string, repeat int) error {
 
 // /deletefile?name=filename: Elimina el archivo especificado si existe.
 func DeleteFile(name string) error {
+	// Locking to ensure safe concurrent access to the file system.
 	fileLock.Lock()
 	defer fileLock.Unlock()
 

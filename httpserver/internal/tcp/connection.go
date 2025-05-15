@@ -3,7 +3,6 @@ package tcp
 import (
 	"bufio"
 	"net"
-	"strings"
 
 	"httpserver/internal/constants"
 	"httpserver/internal/router"
@@ -31,25 +30,10 @@ func (client *TCPClient) handleConnection(connection net.Conn) {
 		return
 	}
 
-	headers := make(map[string]string)
-	for {
-		line, err := bufferedReader.ReadString('\n')
-		if err != nil || line == "\r\n" {
-			break
-		}
-		parts := strings.SplitN(line, ":", 2)
-		if len(parts) == 2 {
-			key := strings.TrimSpace(parts[0])
-			value := strings.TrimSpace(parts[1])
-			headers[key] = value
-		}
-	}
-
 	message := HTTPMessage{
 		Method:  method,
 		Path:    path,
 		Version: version,
-		Headers: headers,
 	}
 	client.ReceiveChan <- message
 
