@@ -1,6 +1,7 @@
 package tcp
 
 import (
+	"httpserver/internal/constants"
 	"log"
 	"net"
 )
@@ -60,6 +61,15 @@ func (client *TCPClient) acceptLoop(instance string) {
 			log.Printf("[%s] Error accepting connection:", instance)
 			continue
 		}
-		go client.handleConnection(connection)
+
+		switch instance {
+			case constants.WORKER:
+				go client.handleWorkerConnection(connection)
+			case constants.DISPATCHER:
+				go client.handleDispatcherConnection(connection)
+			default:
+				log.Printf("[WARN] Unknown instance type %q – closing connection", instance)
+				connection.Close()
+		}
 	}
 }

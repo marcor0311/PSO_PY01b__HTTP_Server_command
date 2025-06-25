@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"httpserver/internal/constants"
+	"httpserver/internal/dispatcher"
 	"httpserver/internal/router"
 	"httpserver/internal/utils"
 )
@@ -14,7 +15,7 @@ import (
  *
  * @param {net.Conn} conn - The TCP connection to handle.
  */
-func (client *TCPClient) handleConnection(connection net.Conn) {
+func (client *TCPClient) handleWorkerConnection(connection net.Conn) {
 	defer connection.Close()
 	bufferedReader := bufio.NewReader(connection)
 
@@ -39,4 +40,29 @@ func (client *TCPClient) handleConnection(connection net.Conn) {
 
 	// Router
 	router.HandleRoute(path, connection)
+}
+
+func (client *TCPClient) handleDispatcherConnection(connection net.Conn) {
+	defer connection.Close()
+	bufferedReader := bufio.NewReader(connection)
+
+	reqLine, err := bufferedReader.ReadString('\n')
+	if err != nil {
+		utils.WriteHTTPResponse(connection, constants.StatusBadRequest, "Error reading request line")
+		return
+	}
+
+	method, path, _, ok := utils.ParseRequestLine(reqLine)
+	if !ok {
+		utils.WriteHTTPResponse(connection, constants.StatusBadRequest, "Error parsing the request line")
+		return
+	}
+
+	// router.HandleDispatcherRouter(path, connection)
+
+	if utils.IsParallel(path) {
+		//dispatcher.HandleParallel()
+	} else {
+		dispatcher.Forward(method, path, connection)
+	}
 }

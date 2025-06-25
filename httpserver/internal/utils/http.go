@@ -2,10 +2,12 @@ package utils
 
 import (
 	"fmt"
+	"io"
 	"net"
+	"net/http"
 	"net/url"
 	"strings"
-	
+
 	"httpserver/internal/constants"
 )
 
@@ -43,6 +45,23 @@ func WriteHTTPResponse(conn net.Conn, status, body string) {
 
 	conn.Write([]byte(headers))
 	conn.Write(bodyBytes)
+}
+
+func CopyHTTPResponse(destination net.Conn, response *http.Response) error {
+	// Status 
+	if _, err := fmt.Fprintf(destination, "HTTP/1.0 %s\r\n", response.Status); err != nil {
+		return err
+	}
+	// Headers
+	if err := response.Header.Write(destination); err != nil {
+		return err
+	}
+	if _, err := io.WriteString(destination, "\r\n"); err != nil { 
+		return err
+	}
+	// Body
+	_, err := io.Copy(destination, response.Body)
+	return err
 }
 
 // ExtractQuery parses and returns the query parameters from the URL path.
