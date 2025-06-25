@@ -21,13 +21,14 @@ type TCPClient struct {
 }
 
 /**
- * Creates and initializes a new TCP client, sets up send and receive channels
- * for message handling and starts a goroutine to accept incoming TCP connections.
- *
- * @param {string} listenAddr - The address and port the client should listen.
- * @returns {TCPClient} - A TCPClient instance.
- * @throws Returns an error if the TCP listener fails.
- */
+* Creates and initializes a new TCP client, sets up send and receive channels
+* for message handling and starts a goroutine to accept incoming TCP connections.
+*
+* @param {string} listenAddr - The address and port the client should listen.
+* @param {string} instance - Whether is the worker or dispatcher.
+* @returns {TCPClient} - A TCPClient instance.
+* @throws Returns an error if the TCP listener fails.
+*/
 func CreateTcpClient(listenAddr string, instance string) (*TCPClient, error) {
 	tcpClient := &TCPClient{
 		ListenAddr:  listenAddr,
@@ -63,13 +64,13 @@ func (client *TCPClient) acceptLoop(instance string) {
 		}
 
 		switch instance {
-			case constants.WORKER:
-				go client.handleWorkerConnection(connection)
-			case constants.DISPATCHER:
-				go client.handleDispatcherConnection(connection)
-			default:
-				log.Printf("[WARN] Unknown instance type %q – closing connection", instance)
-				connection.Close()
+		case constants.WORKER:
+			go client.handleWorkerConnection(connection)
+		case constants.DISPATCHER:
+			go client.handleDispatcherConnection(connection)
+		default:
+			log.Printf("[WARN] Unknown instance type %q – closing connection", instance)
+			connection.Close()
 		}
 	}
 }

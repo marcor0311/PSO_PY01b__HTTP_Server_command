@@ -42,6 +42,13 @@ func (client *TCPClient) handleWorkerConnection(connection net.Conn) {
 	router.HandleRoute(path, connection)
 }
 
+/**
+ * Handles an incoming client connection on the Dispatcher.
+ * Reads the request line, decides whether the route requires parallel processing
+ * or simple forwarding.
+ *
+ * @param {net.Conn} conn - The TCP connection to handle.
+ */
 func (client *TCPClient) handleDispatcherConnection(connection net.Conn) {
 	defer connection.Close()
 	bufferedReader := bufio.NewReader(connection)
