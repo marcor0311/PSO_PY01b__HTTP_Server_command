@@ -1,7 +1,7 @@
 # User Manual – HTTP Server (RedUnix)
 
 ## Requirements
-- Go
+- Docker
 - Git
 - Postman (optional, for testing)
 
@@ -9,20 +9,18 @@
 
 ```bash
 git clone https://github.com/marcor0311/PSO_PY01b__HTTP_Server_command.git
-cd httpserver
-go mod tidy
 ```
 
 ## Running the Server
 
+Build Dispatcher and Worker images
 ```bash
-cd go run cmd/server/main.go
+docker compose build
 ```
 
-This will start the TCP server on port `8080`:
-
-```
-[RedUnix] HTTP Server listening on :8080
+Start Dispatcher (exposed on localhost:8080) + 3 Worker replicas
+```bash
+docker compose up -d
 ```
 
 ## How to Use the Server
