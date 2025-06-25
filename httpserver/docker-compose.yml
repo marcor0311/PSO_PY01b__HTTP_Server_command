@@ -1,0 +1,25 @@
+services:
+  dispatcher:
+    build:
+      context: .                      
+      dockerfile: cmd/dispatcher/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - WORKERS=worker-1:8080,worker-2:8080,worker-3:8080
+      - PORT=8080               
+    depends_on:
+      - worker
+    networks: [backend]
+
+  worker:
+    build:
+      context: .                      
+      dockerfile: cmd/server/Dockerfile
+    deploy:
+      replicas: 3
+    networks: [backend]
+
+
+networks:
+  backend:

@@ -337,6 +337,11 @@ func handleStatus(conn net.Conn, path string) {
 	})
 }
 
+// Ping
+func handlePing(conn net.Conn, path string) {
+	utils.WriteHTTPResponse(conn, constants.StatusOK, "pong")
+}
+
 // Not found handler
 func handleNotFound(conn net.Conn, path string) {
 	utils.WriteHTTPResponse(conn, constants.StatusNotFound, fmt.Sprintf("Unknown path: %s", path))

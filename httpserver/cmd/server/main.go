@@ -1,13 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
+	"httpserver/internal/constants"
 	"httpserver/internal/tcp"
 )
 
 func main() {
-	server, err := tcp.CreateTcpClient(":8080")
+	const port = "8080"
+	listenAddr := fmt.Sprintf(":%s", port)
+
+	server, err := tcp.CreateTcpClient(listenAddr, constants.WORKER)
 	if err != nil {
 		log.Fatalf("Failed to start TCP server: %v", err)
 	}
