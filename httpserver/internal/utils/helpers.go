@@ -6,6 +6,11 @@ import (
 	"strings"
 )
 
+/**
+ * Retrieves an environment variable or returns a default value if it isn’t set.
+ * @param {string} key - Name of the environment variable.
+ * @param {string} def - Fallback value when the variable is absent or empty.
+ */
 func GetEnv(key, def string) string {
 	if v, ok := os.LookupEnv(key); ok && v != "" {
 		return v
@@ -13,12 +18,16 @@ func GetEnv(key, def string) string {
 	return def
 }
 
+/**
+ * Determines whether a given path is marked for parallel processing.
+ * @param {string} path - Request path.
+ */
 func IsParallel(path string) bool {
-    base := strings.SplitN(path, "?", 2)[0] 
-    for _, r := range constants.ParallelRoutes {
-        if base == r {
-            return true
-        }
-    }
-    return false
+	base := strings.SplitN(path, "?", 2)[0]
+	for _, r := range constants.ParallelRoutes {
+		if base == r {
+			return true
+		}
+	}
+	return false
 }

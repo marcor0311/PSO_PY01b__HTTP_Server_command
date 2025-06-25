@@ -47,24 +47,26 @@ func WriteHTTPResponse(conn net.Conn, status, body string) {
 	conn.Write(bodyBytes)
 }
 
+/**
+ * Copy an http response back to the client over the raw TCP connection.
+ * Writes the status line, all headers, a blank line, and finally the response body.
+ * @param {net.Conn} destination - Client TCP connection to write to.
+ * @param {*http.Response} response - Response received from the worker.
+*/
 func CopyHTTPResponse(destination net.Conn, response *http.Response) error {
-	// Status 
-	if _, err := fmt.Fprintf(destination, "HTTP/1.0 %s\r\n", response.Status); err != nil {
+	bodyBytes, err := io.ReadAll(response.Body)
+	if err != nil {
 		return err
 	}
-	// Headers
-	if err := response.Header.Write(destination); err != nil {
-		return err
-	}
-	if _, err := io.WriteString(destination, "\r\n"); err != nil { 
-		return err
-	}
-	// Body
-	_, err := io.Copy(destination, response.Body)
-	return err
+
+	// Re-use the helper that already writes status line, headers and body.
+	WriteHTTPResponse(destination, response.Status, string(bodyBytes))
+	return nil
 }
 
-// ExtractQuery parses and returns the query parameters from the URL path.
+/**
+ * ExtractQuery parses and returns the query parameters from the URL path.
+ */
 func ExtractQuery(path string) (url.Values, error) {
 	parts := strings.SplitN(path, "?", 2)
 	if len(parts) != 2 {
@@ -79,7 +81,9 @@ func ExtractQuery(path string) (url.Values, error) {
 	return query, nil
 }
 
-// RecoverAndRespond catches a system error and sends a 500 response.
+/** 
+ * RecoverAndRespond catches a system error and sends a 500 response.
+ */
 func RecoverAndRespond(conn net.Conn) {
 	if r := recover(); r != nil {
 		WriteHTTPResponse(conn, constants.StatusInternalServerError , fmt.Sprintf("Internal server error: %v", r))
