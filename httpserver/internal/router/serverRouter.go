@@ -25,6 +25,8 @@ func init() {
 	routes[constants.RouteLoadTest] = handleLoadTest
 	routes[constants.RouteHelp] = handleHelp
 	routes[constants.RouteStatus] = handleStatus
+	routes[constants.ParallelRouteMontecarlo] = handleParallelMonteCarlo    
+	routes[constants.ParallelRouteCount]      = handleParallelWordCount 
 }
 
 func HandleRoute(path string, conn net.Conn) {

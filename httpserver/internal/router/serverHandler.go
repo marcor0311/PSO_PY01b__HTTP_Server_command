@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"strings"
 
 	"httpserver/internal/constants"
+	"httpserver/internal/dispatcher"
 	"httpserver/internal/handlers"
 	"httpserver/internal/utils"
 )
@@ -336,6 +338,35 @@ func handleStatus(conn net.Conn, path string) {
 		utils.WriteHTTPResponse(conn, constants.StatusOK, statusJSON)
 	})
 }
+
+// Parallel Monte Carlo handler
+func handleParallelMonteCarlo(conn net.Conn, path string) {
+    defer utils.RecoverAndRespond(conn)
+    handlers.TrackWorker("parallelmontecarlo", func() {
+        parts := strings.SplitN(path, "?", 2)
+        if len(parts) != 2 {
+            utils.WriteHTTPResponse(conn, constants.StatusBadRequest, "Missing parameters")
+            return
+        }
+        query := parts[1]
+        dispatcher.Forward("GET", "/exec/pi?"+query, conn)
+    })
+}
+
+func handleParallelWordCount(conn net.Conn, path string) {
+    defer utils.RecoverAndRespond(conn)
+    handlers.TrackWorker("parallelwordcount", func() {
+        parts := strings.SplitN(path, "?", 2)
+        if len(parts) != 2 {
+            utils.WriteHTTPResponse(conn, constants.StatusBadRequest, "Missing parameters")
+            return
+        }
+        query := parts[1]
+        dispatcher.Forward("GET", "/exec/wordcount?"+query, conn)
+    })
+}
+
+
 
 // Not found handler
 func handleNotFound(conn net.Conn, path string) {
