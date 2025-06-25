@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"httpserver/internal/constants"
 	"os"
+	"strings"
 )
 
 func GetEnv(key, def string) string {
@@ -9,4 +11,14 @@ func GetEnv(key, def string) string {
 		return v
 	}
 	return def
+}
+
+func IsParallel(path string) bool {
+    base := strings.SplitN(path, "?", 2)[0] 
+    for _, r := range constants.ParallelRoutes {
+        if base == r {
+            return true
+        }
+    }
+    return false
 }

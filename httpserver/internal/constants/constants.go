@@ -14,7 +14,21 @@ const (
 	RouteLoadTest   = "/loadtest"
 	RouteHelp       = "/help"
 	RouteStatus     = "/status"
-	RoutePing		= "/ping"
+)
+
+const (
+	ParallelRouteCount = "/countwords"
+	ParallelRouteMatrix = "/matrix"
+)
+
+var ParallelRoutes = []string{
+    ParallelRouteCount,
+    ParallelRouteMatrix,
+}
+
+const (
+	DispatcherRoutePing = "/ping"
+	DispatcherRouteWorkers = "/workers"
 )
 
 const (
@@ -22,9 +36,11 @@ const (
 	StatusBadRequest          = "400 Bad Request"
 	StatusNotFound            = "404 Not Found"
 	StatusInternalServerError = "500 Internal Server Error"
+	StatusServiceUnavailable  = "503 Unavailable"
+	StatusBadGateway		  = "502 Bad Gateway"
 )
 
 const (
-	DISPATCHER      = "Dispatcher"
-	WORKER          = "Worker"
+	DISPATCHER = "Dispatcher"
+	WORKER     = "Worker"
 )
