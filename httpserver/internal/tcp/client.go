@@ -27,7 +27,7 @@ type TCPClient struct {
  * @returns {TCPClient} - A TCPClient instance.
  * @throws Returns an error if the TCP listener fails.
  */
-func CreateTcpClient(listenAddr string) (*TCPClient, error) {
+func CreateTcpClient(listenAddr string, instance string) (*TCPClient, error) {
 	tcpClient := &TCPClient{
 		ListenAddr:  listenAddr,
 		SendChan:    make(chan string, 10),
@@ -40,7 +40,7 @@ func CreateTcpClient(listenAddr string) (*TCPClient, error) {
 	}
 	tcpClient.Ln = listener
 
-	go tcpClient.acceptLoop()
+	go tcpClient.acceptLoop(instance)
 	return tcpClient, nil
 }
 
@@ -49,18 +49,17 @@ func CreateTcpClient(listenAddr string) (*TCPClient, error) {
  * For each new connection, a goroutine is created to handle it concurrently.
  * Closes the listener when the loop ends.
  */
-func (client *TCPClient) acceptLoop() {
+func (client *TCPClient) acceptLoop(instance string) {
 	defer client.Ln.Close()
 
-	log.Printf("[RedUnix] HTTP Server listening on %s\n", client.ListenAddr)
+	log.Printf("[%s] HTTP Server listening on %s\n", instance, client.ListenAddr)
 
 	for {
 		connection, error := client.Ln.Accept()
 		if error != nil {
-			log.Println("[RedUnix] Error accepting connection:", error)
+			log.Printf("[%s] Error accepting connection:", instance)
 			continue
 		}
 		go client.handleConnection(connection)
 	}
 }
-

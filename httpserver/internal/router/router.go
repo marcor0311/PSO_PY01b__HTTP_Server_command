@@ -3,7 +3,7 @@ package router
 import (
 	"net"
 	"strings"
-	
+
 	"httpserver/internal/constants"
 )
 
@@ -25,6 +25,7 @@ func init() {
 	routes[constants.RouteLoadTest] = handleLoadTest
 	routes[constants.RouteHelp] = handleHelp
 	routes[constants.RouteStatus] = handleStatus
+	routes[constants.RoutePing] = handlePing
 }
 
 func HandleRoute(path string, conn net.Conn) {
