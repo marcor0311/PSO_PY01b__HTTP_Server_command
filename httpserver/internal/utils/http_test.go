@@ -24,7 +24,6 @@ func TestParseRequestLine_Invalid(t *testing.T) {
 }
 
 // ExtractQuery 
-
 func TestExtractQuery_Valid(t *testing.T) {
 	queryStr := "/test?name=foo&age=42"
 	values, err := ExtractQuery(queryStr)

@@ -2,6 +2,7 @@ package worker
 
 import (
 	"fmt"
+	"httpserver/internal/constants"
 	"log"
 	"net/http"
 	"os"
@@ -135,4 +136,32 @@ func SendRequestToWorker(endpoint string, body string) (*http.Response, *Worker,
 	}
 
 	return resp, worker, nil
+}
+
+func CheckWorkerHealth() {
+	WorkerRegistry.Lock()
+	defer WorkerRegistry.Unlock()
+
+	for _, worker := range Workers {
+		go func(worker *Worker) {
+			client := http.Client{Timeout: 1 * time.Second}
+			resp, err := client.Get(worker.Address + constants.DispatcherRoutePing)
+			worker.LastCheck = time.Now()
+
+			if err != nil || resp.StatusCode != http.StatusOK {
+				if worker.Active {
+					log.Printf("[HealthCheck] Marking %s as inactive", worker.Address)
+				}
+				worker.Active = false
+			} else {
+				if !worker.Active {
+					log.Printf("[HealthCheck] Marking %s as active", worker.Address)
+				}
+				worker.Active = true
+			}
+			if resp != nil {
+				resp.Body.Close()
+			}
+		}(worker)
+	}
 }
