@@ -97,39 +97,47 @@ go test -cover ./...
 # App Architecture 
 ```
 httpserver/
-│   └── go.mod
-│   └── MANUAL.md
 ├── cmd/
+│   ├── dispatcher/
+│   │   └── main.go
 │   └── server/
 │       └── main.go
 ├── internal/
 │   ├── constants/
-│   │   └── constants.go
+│   │   └── paths.go
+│   ├── dispatcher/
+│   │   └── dispatcher.go
 │   ├── handlers/
 │   │   └── files.go
 │   │   └── files_test.go
 │   │   └── help.go
-│   │   └── help_test.go
 │   │   └── math.go
 │   │   └── math_test.go
 │   │   └── simulate.go
 │   │   └── simulate_test.go
-│   │   └── status.go
-│   │   └── status_test.go
 │   │   └── strings.go
 │   │   └── strings_test.go
 │   │   └── system.go
 │   │   └── system_test.go
+│   │   └── worker.go
+│   │   └── worker_test.go
 │   ├── router/
-│   │   └── handlers.go
 │   │   └── router.go
+│   │   └── routerDispatcher.go
+│   │   └── routerParallel.go
+│   │   └── routerServer.go
 │   ├── tcp/
-│   │   └── client.go
 │   │   └── connection.go
+│   │   └── client.go
 │   ├── utils/
-        └── http_test.go
 │   │   └── http.go
-└──  postman/
-    └── server.postman_collection.json
-
+│   │   └── http_test.go
+│   │   └── helpers.go
+│   │   └── helpers_test.go
+│   └── worker/
+│       └── worker.go
+├── postman/
+│   └── server.postman_collection.json
+├── go.mod
+├── docker-compose.yml
 ```
