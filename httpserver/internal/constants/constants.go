@@ -18,12 +18,12 @@ const (
 
 const (
 	ParallelRouteCount = "/countwords"
-	ParallelRouteMatrix = "/matrix"
+	ParallelRouteMontecarlo = "/montecarlo"
 )
 
 var ParallelRoutes = []string{
     ParallelRouteCount,
-    ParallelRouteMatrix,
+    ParallelRouteMontecarlo,
 }
 
 const (

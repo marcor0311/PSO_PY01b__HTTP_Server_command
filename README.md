@@ -20,7 +20,7 @@ docker compose build
 
 Start Dispatcher (exposed on localhost:8080) + 3 Worker replicas
 ```bash
-docker compose up -d
+x
 ```
 
 ## How to Use the Server
