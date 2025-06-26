@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -52,6 +53,7 @@ func WriteHTTPResponse(conn net.Conn, status, body string) {
 /**
  * Copy an http response back to the client over the raw TCP connection.
  * Writes the status line, all headers, a blank line, and finally the response body.
+ *
  * @param {net.Conn} destination - Client TCP connection to write to.
  * @param {*http.Response} response - Response received from the worker.
  */
@@ -61,28 +63,36 @@ func CopyHTTPResponse(destination net.Conn, response *http.Response) error {
 		return err
 	}
 
-	// Re-use the helper that already writes status line, headers and body.
 	WriteHTTPResponse(destination, response.Status, string(bodyBytes))
+	log.Printf("[Dispatcher] Response successfully forwarded to the client")
 	return nil
 }
 
 /**
  * ExtractQuery parses and returns the query parameters from the URL path.
+ *
+ * @param {string} path - Path with params.
  */
 func ExtractQuery(path string) (url.Values, error) {
 	parts := strings.SplitN(path, "?", 2)
 	if len(parts) != 2 {
-		return nil, fmt.Errorf("missing query parameters in path: %q", path)
+		return nil, fmt.Errorf("Missing query parameters in path: %q", path)
 	}
 
 	query, err := url.ParseQuery(parts[1])
 	if err != nil {
-		return nil, fmt.Errorf("invalid query format: %v", err)
+		return nil, fmt.Errorf("Invalid query format: %v", err)
 	}
 
 	return query, nil
 }
 
+/**
+ * Reads the body of a request.
+ *
+ * @param {*bufio.Reader} br - BufferedReader.
+ * @param {map[string]string} headers.
+ */
 func ReadRequestBody(br *bufio.Reader, headers map[string]string) ([]byte, error) {
 	clen, err := strconv.Atoi(headers["Content-Length"])
 	if err != nil {

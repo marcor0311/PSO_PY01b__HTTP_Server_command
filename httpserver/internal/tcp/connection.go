@@ -38,7 +38,6 @@ func (client *TCPClient) handleWorkerConnection(connection net.Conn) {
 	}
 	client.ReceiveChan <- message
 
-	// 👉 router now receives the same bufferedReader positioned at headers
 	router.HandleRoute(path, connection, bufferedReader)
 }
 

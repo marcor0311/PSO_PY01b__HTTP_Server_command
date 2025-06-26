@@ -62,6 +62,7 @@ func TrackWorker(taskName string, fn func()) {
 	SetWorkerAvailable(id)
 }
 
+// /status : Return the status of the workers
 func GetStatusJSON() (string, error) {
 	uptime := time.Since(startTime).Truncate(time.Second)
 
@@ -87,6 +88,7 @@ func GetStatusJSON() (string, error) {
 	return string(jsonBytes), nil
 }
 
+// /wokers : Return information about the workers
 func GetWorkerInformation() (string, error) {
 	worker.WorkerRegistry.Lock()
 	list := make([]worker.Worker, 0, len(worker.Workers))

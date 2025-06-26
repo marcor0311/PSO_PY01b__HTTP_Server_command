@@ -18,37 +18,47 @@ import (
  * @param {net.Conn} connection - TCP connection to the original client.
  */
 func Forward(method, path string, connection net.Conn) {
-	worker := worker.ChooseWorker()
-	if worker == nil {
-		utils.WriteHTTPResponse(connection, constants.StatusServiceUnavailable,
-			"There are not available workers")
+	const maxAttempts = 2
+
+	var lastErr error
+
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		worker := worker.ChooseWorker()
+		if worker == nil {
+			utils.WriteHTTPResponse(connection, constants.StatusServiceUnavailable,
+				"There are no available workers")
+			return
+		}
+
+		log.Printf("[Dispatcher] Attempt %d: forwarding to worker %s", attempt, worker.Address)
+
+		targetURL := worker.Address + path
+		req, err := http.NewRequest(method, targetURL, nil)
+		if err != nil {
+			lastErr = err
+			utils.WriteHTTPResponse(connection, constants.StatusBadRequest,
+				fmt.Sprintf("[Dispatcher] Request build error: %v", err))
+			return
+		}
+
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			log.Printf("[Dispatcher] Error contacting %s", worker.Address)
+			worker.MarkInactive()
+			lastErr = err
+			continue
+		}
+		defer resp.Body.Close()
+
+		if err := utils.CopyHTTPResponse(connection, resp); err != nil {
+			log.Printf("[Dispatcher] Copy response error: %v", err)
+		}
+
+		worker.Completed++
+		worker.Load++
 		return
 	}
 
-	log.Printf("[Dispatcher] Worker: %s selected for task %s", worker.Address, path)
-
-	targetURL := worker.Address + path
-
-	req, err := http.NewRequest(method, targetURL, nil)
-	if err != nil {
-		utils.WriteHTTPResponse(connection, constants.StatusBadRequest,
-			fmt.Sprintf("[Dispatcher] Request build error: %v", err))
-		return
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		utils.WriteHTTPResponse(connection, constants.StatusBadGateway,
-			fmt.Sprintf("[Dispatcher] Worker error: %v", err))
-		return
-	}
-	defer resp.Body.Close()
-
-	if err := utils.CopyHTTPResponse(connection, resp); err != nil {
-		fmt.Printf("[Dispatcher] Copy response error: %v\n", err)
-		return
-	}
-
-	worker.Completed++
-	worker.Load++
+	utils.WriteHTTPResponse(connection, constants.StatusBadGateway,
+		fmt.Sprintf("[Dispatcher] All forwarding attempts failed: %v", lastErr))
 }
