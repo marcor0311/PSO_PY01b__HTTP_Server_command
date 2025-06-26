@@ -38,8 +38,8 @@ func (client *TCPClient) handleWorkerConnection(connection net.Conn) {
 	}
 	client.ReceiveChan <- message
 
-	// Router
-	router.HandleRoute(path, connection)
+	// 👉 router now receives the same bufferedReader positioned at headers
+	router.HandleRoute(path, connection, bufferedReader)
 }
 
 /**
@@ -65,11 +65,10 @@ func (client *TCPClient) handleDispatcherConnection(connection net.Conn) {
 		return
 	}
 
-	// router.HandleDispatcherRouter(path, connection)
-
-	if utils.IsParallel(path) {
-		//dispatcher.HandleParallel()
-	} else {
-		dispatcher.Forward(method, path, connection)
+	handled := router.HandleDispatcherRouter(path, connection, bufferedReader)
+	if handled {
+		return
 	}
+
+	dispatcher.Forward(method, path, connection)
 }

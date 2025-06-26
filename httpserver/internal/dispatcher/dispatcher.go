@@ -2,6 +2,7 @@ package dispatcher
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 
@@ -23,6 +24,8 @@ func Forward(method, path string, connection net.Conn) {
 			"There are not available workers")
 		return
 	}
+
+	log.Printf("[Dispatcher] Worker: %s selected for task %s", worker.Address, path)
 
 	targetURL := worker.Address + path
 

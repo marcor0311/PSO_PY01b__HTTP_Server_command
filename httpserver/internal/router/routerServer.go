@@ -1,6 +1,8 @@
 package router
 
 import (
+	"bufio"
+	"encoding/json"
 	"fmt"
 	"net"
 	"strconv"
@@ -11,7 +13,7 @@ import (
 )
 
 // Fibonacci number handler
-func handleFibonacci(conn net.Conn, path string) {
+func handleFibonacci(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("fibonacci", func() {
 		query, err := utils.ExtractQuery(path)
@@ -44,7 +46,7 @@ func handleFibonacci(conn net.Conn, path string) {
 }
 
 // Random number handler
-func handleRandom(conn net.Conn, path string) {
+func handleRandom(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("random", func() {
 		query, err := utils.ExtractQuery(path)
@@ -78,7 +80,7 @@ func handleRandom(conn net.Conn, path string) {
 }
 
 // Reverse string handler
-func handleReverse(conn net.Conn, path string) {
+func handleReverse(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("reverse", func() {
 		query, err := utils.ExtractQuery(path)
@@ -99,7 +101,7 @@ func handleReverse(conn net.Conn, path string) {
 }
 
 // To uppercase handler
-func handleToUpper(conn net.Conn, path string) {
+func handleToUpper(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("upper", func() {
 		query, err := utils.ExtractQuery(path)
@@ -121,7 +123,7 @@ func handleToUpper(conn net.Conn, path string) {
 }
 
 // Hash converter handler
-func handleHash(conn net.Conn, path string) {
+func handleHash(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("upper", func() {})
 	query, err := utils.ExtractQuery(path)
@@ -141,7 +143,7 @@ func handleHash(conn net.Conn, path string) {
 }
 
 // Time stamp handler
-func handleTimestamp(conn net.Conn, path string) {
+func handleTimestamp(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("timestamp", func() {
 		timestamp := handlers.Timestamp()
@@ -151,7 +153,7 @@ func handleTimestamp(conn net.Conn, path string) {
 }
 
 // Help handler
-func handleHelp(conn net.Conn, path string) {
+func handleHelp(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("help", func() {
 		help := handlers.HelpText()
@@ -161,7 +163,7 @@ func handleHelp(conn net.Conn, path string) {
 }
 
 // Create file handler
-func handleCreateFile(conn net.Conn, path string) {
+func handleCreateFile(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("createfile", func() {
 		query, err := utils.ExtractQuery(path)
@@ -197,7 +199,7 @@ func handleCreateFile(conn net.Conn, path string) {
 }
 
 // Delete file handler
-func handleDeleteFile(conn net.Conn, path string) {
+func handleDeleteFile(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("deletefile", func() {
 		query, err := utils.ExtractQuery(path)
@@ -224,7 +226,7 @@ func handleDeleteFile(conn net.Conn, path string) {
 }
 
 // Simulate task handler
-func handleSimulate(conn net.Conn, path string) {
+func handleSimulate(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("simulate", func() {
 		query, err := utils.ExtractQuery(path)
@@ -254,7 +256,7 @@ func handleSimulate(conn net.Conn, path string) {
 }
 
 // Sleep handler
-func handleSleep(conn net.Conn, path string) {
+func handleSleep(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("sleep", func() {
 		query, err := utils.ExtractQuery(path)
@@ -282,7 +284,7 @@ func handleSleep(conn net.Conn, path string) {
 }
 
 // /loadtest?tasks=n&sleep=s
-func handleLoadTest(conn net.Conn, path string) {
+func handleLoadTest(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("loadtest", func() {
 		query, err := utils.ExtractQuery(path)
@@ -324,7 +326,7 @@ func handleLoadTest(conn net.Conn, path string) {
 }
 
 // Status handler
-func handleStatus(conn net.Conn, path string) {
+func handleStatus(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("status", func() {
 		statusJSON, err := handlers.GetStatusJSON()
@@ -337,7 +339,41 @@ func handleStatus(conn net.Conn, path string) {
 	})
 }
 
+func handleWordCountChunk(conn net.Conn, path string, br *bufio.Reader) {
+	defer utils.RecoverAndRespond(conn)
+
+	// discard headers (read until blank line)
+	for {
+		line, err := br.ReadString('\n')
+		if err != nil {
+			utils.WriteHTTPResponse(conn, constants.StatusBadRequest, "cannot read headers")
+			return
+		}
+		if line == "\r\n" || line == "\n" {
+			break
+		}
+	}
+
+	var req struct {
+		ID    int    `json:"id"`
+		Chunk string `json:"chunk"`
+	}
+	if err := json.NewDecoder(br).Decode(&req); err != nil {
+		utils.WriteHTTPResponse(conn, constants.StatusBadRequest, "invalid JSON")
+		return
+	}
+
+	freq := handlers.CountWords(req.Chunk)
+
+	resBytes, _ := json.Marshal(struct {
+		ID   int            `json:"id"`
+		Freq map[string]int `json:"freq"`
+	}{req.ID, freq})
+
+	utils.WriteHTTPResponse(conn, constants.StatusOK, string(resBytes))
+}
+
 // Not found handler
-func handleNotFound(conn net.Conn, path string) {
+func handleNotFound(conn net.Conn, path string, _ *bufio.Reader) {
 	utils.WriteHTTPResponse(conn, constants.StatusNotFound, fmt.Sprintf("Unknown path: %s", path))
 }

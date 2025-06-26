@@ -1,11 +1,13 @@
 package utils
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"net"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 
 	"httpserver/internal/constants"
@@ -52,7 +54,7 @@ func WriteHTTPResponse(conn net.Conn, status, body string) {
  * Writes the status line, all headers, a blank line, and finally the response body.
  * @param {net.Conn} destination - Client TCP connection to write to.
  * @param {*http.Response} response - Response received from the worker.
-*/
+ */
 func CopyHTTPResponse(destination net.Conn, response *http.Response) error {
 	bodyBytes, err := io.ReadAll(response.Body)
 	if err != nil {
@@ -81,11 +83,21 @@ func ExtractQuery(path string) (url.Values, error) {
 	return query, nil
 }
 
-/** 
+func ReadRequestBody(br *bufio.Reader, headers map[string]string) ([]byte, error) {
+	clen, err := strconv.Atoi(headers["Content-Length"])
+	if err != nil {
+		return nil, fmt.Errorf("Missing or invalid Content-Length")
+	}
+	buf := make([]byte, clen)
+	_, err = io.ReadFull(br, buf)
+	return buf, err
+}
+
+/**
  * RecoverAndRespond catches a system error and sends a 500 response.
  */
 func RecoverAndRespond(conn net.Conn) {
 	if r := recover(); r != nil {
-		WriteHTTPResponse(conn, constants.StatusInternalServerError , fmt.Sprintf("Internal server error: %v", r))
+		WriteHTTPResponse(conn, constants.StatusInternalServerError, fmt.Sprintf("Internal server error: %v", r))
 	}
 }
