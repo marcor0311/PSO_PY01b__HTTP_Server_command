@@ -46,7 +46,7 @@ curl "http://localhost:8080/help"
 - **Command:**
   ```bash
   # replace 1000000 with the total number of random points to use
-  curl -i "http://localhost:8080/montecarlo?points=1000000"
+  curl "http://localhost:8080/montecarlo?points=1000000"
   ```
 
 ### Word Count
