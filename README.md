@@ -37,6 +37,32 @@ curl "http://localhost:8080/timestamp"
 curl "http://localhost:8080/help"
 ```
 
+
+## Parallel Problems
+
+### Monte Carlo 
+- **Endpoint:** `/montecarlo?points=N`
+- **Description:** Estimates π by distributing N random point simulations across workers.
+- **Command:**
+  ```bash
+  # replace 1000000 with the total number of random points to use
+  curl -i "http://localhost:8080/montecarlo?points=1000000"
+  ```
+
+### Word Count
+- **Endpoint:** `/countwords?url=<FILE_URL>`
+- **Description:** Counts the frequency of words in a large file by distributing chunks across workers.
+- **Command:**
+  ```bash
+  # replace <FILE_URL> with the URL of your large file
+  curl "http://localhost:8080/countwords?url=<FILE_URL>"
+  ```
+  ```bash
+  # Example: Linux device documentation in plain text
+  curl "http://localhost:8080/countwords?url=https://www.kernel.org/doc/Documentation/admin-guide/devices.txt"
+  ```
+
+
 ## Testing with Postman
 
 1. Open Postman
