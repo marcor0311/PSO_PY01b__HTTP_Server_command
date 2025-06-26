@@ -23,6 +23,11 @@ Start Dispatcher (exposed on localhost:8080) + 3 Worker replicas
 docker compose up -d
 ```
 
+Logs for all workers
+```bash
+docker-compose logs --follow dispatcher  
+```
+
 ## How to Use the Server
 
 The server listens for HTTP/1.0 requests over TCP. You can test it with curl or Postman.
@@ -36,6 +41,35 @@ curl "http://localhost:8080/reverse?text=hello"
 curl "http://localhost:8080/timestamp"
 curl "http://localhost:8080/help"
 ```
+
+
+## Parallel Problems
+
+### Monte Carlo 
+- **Endpoint:** `/montecarlo?points=N`
+- **Description:** Estimates π by distributing N random point simulations across workers.
+- **Command:**
+
+```bash
+  # replace 1000000 with the total number of random points to use
+  curl "http://localhost:8080/montecarlo?points=1000000"
+```
+
+### Word Count
+- **Endpoint:** `/countwords?url=<FILE_URL>`
+- **Description:** Counts the frequency of words in a large file by distributing chunks across workers.
+- **Command:**
+
+```bash
+  # replace <FILE_URL> with the URL of your large file
+  curl "http://localhost:8080/countwords?url=<FILE_URL>"
+```
+
+```bash
+  # Example: Linux device documentation in plain text
+  curl "http://localhost:8080/countwords?url=https://www.kernel.org/doc/Documentation/admin-guide/devices.txt"
+```
+
 
 ## Testing with Postman
 
@@ -71,39 +105,47 @@ go test -cover ./...
 # App Architecture 
 ```
 httpserver/
-│   └── go.mod
-│   └── MANUAL.md
 ├── cmd/
+│   ├── dispatcher/
+│   │   └── main.go
 │   └── server/
 │       └── main.go
 ├── internal/
 │   ├── constants/
-│   │   └── constants.go
+│   │   └── paths.go
+│   ├── dispatcher/
+│   │   └── dispatcher.go
 │   ├── handlers/
 │   │   └── files.go
 │   │   └── files_test.go
 │   │   └── help.go
-│   │   └── help_test.go
 │   │   └── math.go
 │   │   └── math_test.go
 │   │   └── simulate.go
 │   │   └── simulate_test.go
-│   │   └── status.go
-│   │   └── status_test.go
 │   │   └── strings.go
 │   │   └── strings_test.go
 │   │   └── system.go
 │   │   └── system_test.go
+│   │   └── worker.go
+│   │   └── worker_test.go
 │   ├── router/
-│   │   └── handlers.go
 │   │   └── router.go
+│   │   └── routerDispatcher.go
+│   │   └── routerParallel.go
+│   │   └── routerServer.go
 │   ├── tcp/
-│   │   └── client.go
 │   │   └── connection.go
+│   │   └── client.go
 │   ├── utils/
-        └── http_test.go
 │   │   └── http.go
-└──  postman/
-    └── server.postman_collection.json
-
+│   │   └── http_test.go
+│   │   └── helpers.go
+│   │   └── helpers_test.go
+│   └── worker/
+│       └── worker.go
+├── postman/
+│   └── server.postman_collection.json
+├── go.mod
+├── docker-compose.yml
 ```
