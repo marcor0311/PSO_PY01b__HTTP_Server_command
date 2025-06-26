@@ -7,10 +7,18 @@ import (
 	"httpserver/internal/utils"
 	"httpserver/internal/worker"
 	"log"
+	"time"
 )
 
 func main() {
 	worker.RegisterWorkersFromEnv()
+
+	go func() {
+		for {
+			worker.CheckWorkerHealth()
+			time.Sleep(10 * time.Second)
+		}
+	}()
 
 	port := utils.GetEnv("PORT", "8080")
 	serverPort := fmt.Sprintf(":%s", port)

@@ -55,7 +55,6 @@ func Forward(method, path string, connection net.Conn) {
 		}
 
 		worker.Completed++
-		worker.Load++
 		return
 	}
 

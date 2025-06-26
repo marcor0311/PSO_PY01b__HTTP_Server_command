@@ -90,91 +90,91 @@ func HandleParallelWordCount(fileURL string) (string, error) {
 }
 
 func HandleParallelMontecarlo(points int) (string, error) {
-    worker.WorkerRegistry.Lock()
-    numWorkers := len(worker.Workers)
-    worker.WorkerRegistry.Unlock()
-    if numWorkers == 0 {
-        numWorkers = 1
-    }
+	worker.WorkerRegistry.Lock()
+	numWorkers := len(worker.Workers)
+	worker.WorkerRegistry.Unlock()
+	if numWorkers == 0 {
+		numWorkers = 1
+	}
 
-    pointsPerWorker := points / numWorkers
-    remainder := points % numWorkers
+	pointsPerWorker := points / numWorkers
+	remainder := points % numWorkers
 
-    var (
-        wg          sync.WaitGroup
-        mutex       sync.Mutex
-        totalInside int
-    )
+	var (
+		wg          sync.WaitGroup
+		mutex       sync.Mutex
+		totalInside int
+	)
 
-    for i := 0; i < numWorkers; i++ {
-        subPoints := pointsPerWorker
-        if i == numWorkers-1 {
-            subPoints += remainder
-        }
-        wg.Add(1)
-        go func(id, pts int) {
-            defer wg.Done()
-            for {
-                insideCount, err := sendMontecarloToWorker(id, pts)
-                if err != nil {
-                    log.Printf("[Dispatcher] Monte Carlo chunk %d failed: %v", id, err)
-                    log.Printf("[Dispatcher] Retrying chunk %d...", id)
-                    time.Sleep(300 * time.Millisecond)
-                    continue
-                }
-                mutex.Lock()
-                totalInside += insideCount
-                mutex.Unlock()
-                break
-            }
-        }(i, subPoints)
-    }
+	for i := 0; i < numWorkers; i++ {
+		subPoints := pointsPerWorker
+		if i == numWorkers-1 {
+			subPoints += remainder
+		}
+		wg.Add(1)
+		go func(id, pts int) {
+			defer wg.Done()
+			for {
+				insideCount, err := sendMontecarloToWorker(id, pts)
+				if err != nil {
+					log.Printf("[Dispatcher] Monte Carlo chunk %d failed: %v", id, err)
+					log.Printf("[Dispatcher] Retrying chunk %d...", id)
+					time.Sleep(300 * time.Millisecond)
+					continue
+				}
+				mutex.Lock()
+				totalInside += insideCount
+				mutex.Unlock()
+				break
+			}
+		}(i, subPoints)
+	}
 
-    wg.Wait()
+	wg.Wait()
 
-    pi := 4.0 * float64(totalInside) / float64(points)
-    result := struct {
-        Pi         float64 `json:"pi"`
-        Total      int     `json:"total_points"`
-        Inside     int     `json:"inside_count"`
-        NumWorkers int     `json:"workers"`
-    }{
-        Pi:         pi,
-        Total:      points,
-        Inside:     totalInside,
-        NumWorkers: numWorkers,
-    }
+	pi := 4.0 * float64(totalInside) / float64(points)
+	result := struct {
+		Pi         float64 `json:"pi"`
+		Total      int     `json:"total_points"`
+		Inside     int     `json:"inside_count"`
+		NumWorkers int     `json:"workers"`
+	}{
+		Pi:         pi,
+		Total:      points,
+		Inside:     totalInside,
+		NumWorkers: numWorkers,
+	}
 
-    resultJSON, _ := json.MarshalIndent(result, "", "  ")
-    return string(resultJSON), nil
+	resultJSON, _ := json.MarshalIndent(result, "", "  ")
+	return string(resultJSON), nil
 }
 
 func sendMontecarloToWorker(id, points int) (int, error) {
-    payload, _ := json.Marshal(struct {
-        ID     int `json:"id"`
-        Points int `json:"points"`
-    }{ID: id, Points: points})
+	payload, _ := json.Marshal(struct {
+		ID     int `json:"id"`
+		Points int `json:"points"`
+	}{ID: id, Points: points})
 
-    resp, w, err := worker.SendRequestToWorker(constants.ParallelRouteMontecarlo, string(payload))
-    if err != nil {
-        return 0, err
-    }
-    defer resp.Body.Close()
+	resp, w, err := worker.SendRequestToWorker(constants.ParallelRouteMontecarlo, string(payload))
+	if err != nil {
+		return 0, err
+	}
+	defer resp.Body.Close()
 
-    if resp.StatusCode != http.StatusOK {
-        w.MarkInactive()
-        return 0, fmt.Errorf("Worker %s returned %s", w.Address, resp.Status)
-    }
+	if resp.StatusCode != http.StatusOK {
+		w.MarkInactive()
+		return 0, fmt.Errorf("Worker %s returned %s", w.Address, resp.Status)
+	}
 
-    var res struct {
-        ID     int `json:"id"`
-        Inside int `json:"inside"`
-    }
-    if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
-        return 0, err
-    }
-    log.Printf("[Dispatcher] Received Monte Carlo chunk %d from %s: inside=%d", id, w.Address, res.Inside)
-    return res.Inside, nil
+	var res struct {
+		ID     int `json:"id"`
+		Inside int `json:"inside"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+		return 0, err
+	}
+	log.Printf("[Dispatcher] Received Monte Carlo chunk %d from %s: inside=%d", id, w.Address, res.Inside)
+	return res.Inside, nil
 }
 
 func sendChunkToWorker(id int, chunk string) (map[string]int, error) {
@@ -189,11 +189,6 @@ func sendChunkToWorker(id int, chunk string) (map[string]int, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		worker.MarkInactive()
-		return nil, fmt.Errorf("Worker %s returned %s", worker.Address, resp.Status)
-	}
-
 	var res struct {
 		ID   int            `json:"id"`
 		Freq map[string]int `json:"freq"`
@@ -201,6 +196,8 @@ func sendChunkToWorker(id int, chunk string) (map[string]int, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
 		return nil, err
 	}
+
+	worker.Completed++
 
 	log.Printf("[Dispatcher] Successfully received chunk %d from worker %s", id, worker.Address)
 	return res.Freq, nil

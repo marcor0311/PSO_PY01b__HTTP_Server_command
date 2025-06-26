@@ -29,6 +29,7 @@ func init() {
 	routes[constants.RouteStatus] = handleStatus
 	routes[constants.ParallelRouteCount] = handleWordCountChunk
 	routes[constants.ParallelRouteMontecarlo] = handleMontecarlo
+	routes[constants.DispatcherRoutePing] = handlePing
 	dispatcherRoutes[constants.DispatcherRouteWorkers] = handleWorkers
 	dispatcherRoutes[constants.DispatcherRoutePing] = handlePing
 	dispatcherRoutes[constants.ParallelRouteCount] = handlParallelWordCount
