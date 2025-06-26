@@ -72,13 +72,19 @@ go test -cover ./...
 ```
 httpserver/
 │   └── go.mod
-│   └── MANUAL.md
+│   └── docker-compose.yml
 ├── cmd/
+│   ├── dispatcher/
+│   │   └── Dockerfile
+│   │   └── main.go
 │   └── server/
+│       └── Dockerfile
 │       └── main.go
 ├── internal/
 │   ├── constants/
 │   │   └── constants.go
+│   ├── dispatcher/
+│   │   └── dispatcher.go
 │   ├── handlers/
 │   │   └── files.go
 │   │   └── files_test.go
@@ -88,22 +94,27 @@ httpserver/
 │   │   └── math_test.go
 │   │   └── simulate.go
 │   │   └── simulate_test.go
-│   │   └── status.go
-│   │   └── status_test.go
 │   │   └── strings.go
 │   │   └── strings_test.go
 │   │   └── system.go
 │   │   └── system_test.go
+│   │   └── worker.go
+│   │   └── worker_test.go
 │   ├── router/
-│   │   └── handlers.go
 │   │   └── router.go
+│   │   └── routerDispatcher.go
+│   │   └── routerParallel.go
+│   │   └── routerServer.go
 │   ├── tcp/
 │   │   └── client.go
 │   │   └── connection.go
 │   ├── utils/
-        └── http_test.go
 │   │   └── http.go
-└──  postman/
+│   │   └── http_test.go
+│   │   └── helpers.go
+│   │   └── helpers_test.go
+│   └── worker/
+│       └── worker.go
+└── postman/
     └── server.postman_collection.json
-
 ```

@@ -2,8 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
+	"httpserver/internal/worker"
 	"os"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 )
@@ -57,4 +59,47 @@ func TestRegisterAndTrackWorker(t *testing.T) {
 	if status.MainPID != os.Getpid() {
 		t.Errorf("Expected PID %d, got %d", os.Getpid(), status.MainPID)
 	}
+}
+
+func TestGetWorkerInformation(t *testing.T) {
+	// Backup original state
+	originalWorkers := worker.Workers
+
+	// Setup mock workers
+	mockTime := time.Date(2025, 6, 26, 10, 0, 0, 0, time.UTC)
+	worker.Workers = map[string]*worker.Worker{
+		"w2": {ID: "w2", LastCheck: mockTime},
+		"w1": {ID: "w1", LastCheck: mockTime.Add(-1 * time.Minute)},
+	}
+	worker.WorkerRegistry = sync.Mutex{}
+
+	expected := []worker.Worker{
+		{ID: "w1", LastCheck: mockTime.Add(-1 * time.Minute).In(time.UTC)},
+		{ID: "w2", LastCheck: mockTime.In(time.UTC)},
+	}
+
+	t.Run("returns sorted and JSON-formatted workers", func(t *testing.T) {
+		result, err := GetWorkerInformation()
+		if err != nil {
+			t.Fatalf("Unexpected error: %v", err)
+		}
+
+		var parsed []worker.Worker
+		if err := json.Unmarshal([]byte(result), &parsed); err != nil {
+			t.Fatalf("Failed to parse JSON: %v", err)
+		}
+
+		if len(parsed) != len(expected) {
+			t.Errorf("Expected %d workers, got %d", len(expected), len(parsed))
+		}
+
+		for i := range expected {
+			if parsed[i].ID != expected[i].ID || !parsed[i].LastCheck.Equal(expected[i].LastCheck) {
+				t.Errorf("Mismatch at index %d: got %+v, expected %+v", i, parsed[i], expected[i])
+			}
+		}
+	})
+
+	// Restore original state
+	worker.Workers = originalWorkers
 }

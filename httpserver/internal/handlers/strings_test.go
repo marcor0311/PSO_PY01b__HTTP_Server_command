@@ -1,9 +1,10 @@
 package handlers_test
 
 import (
+	"reflect"
 	"strings"
 	"testing"
-	
+
 	"httpserver/internal/handlers"
 )
 
@@ -71,4 +72,53 @@ func isHex(s string) bool {
 		}
 	}
 	return true
+}
+
+func TestCountWords(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected map[string]int
+	}{
+		{
+			name:  "simple sentence",
+			input: "Hello world hello",
+			expected: map[string]int{
+				"hello": 2,
+				"world": 1,
+			},
+		},
+		{
+			name:  "punctuation and case",
+			input: "Go, go, GO!",
+			expected: map[string]int{
+				"go": 3,
+			},
+		},
+		{
+			name:  "mixed words",
+			input: "One fish two fish red fish blue fish.",
+			expected: map[string]int{
+				"one":  1,
+				"fish": 4,
+				"two":  1,
+				"red":  1,
+				"blue": 1,
+			},
+		},
+		{
+			name:     "empty input",
+			input:    "",
+			expected: map[string]int{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := handlers.CountWords(tt.input)
+			if !reflect.DeepEqual(result, tt.expected) {
+				t.Errorf("Expected %+v, got %+v", tt.expected, result)
+			}
+		})
+	}
 }
