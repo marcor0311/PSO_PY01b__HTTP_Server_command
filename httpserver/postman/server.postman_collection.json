@@ -1,11 +1,10 @@
 {
 	"info": {
-		"_postman_id": "56697b3b-e0e4-4945-9db3-0d1309868124",
+		"_postman_id": "d90ddd6c-0b83-4144-b065-79696c652fba",
 		"name": "HTTP Server - OS Project",
 		"description": "Postman collection for testing custom HTTP/1.0 server endpoints",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "8017687",
-		"_collection_link": "https://dark-shuttle-7932.postman.co/workspace/Team-Workspace~b90319a6-8530-4016-80b8-c38667872204/collection/8017687-56697b3b-e0e4-4945-9db3-0d1309868124?action=share&source=collection_link&creator=8017687"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24235329"
 	},
 	"item": [
 		{
@@ -17,7 +16,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/createfile?name=test.txt&content=Hello&repeat=3",
+							"raw": "{{host}}/createfile?name=sss.txt&content=Hello&repeat=3",
 							"host": [
 								"{{host}}"
 							],
@@ -27,7 +26,7 @@
 							"query": [
 								{
 									"key": "name",
-									"value": "test.txt"
+									"value": "sss.txt"
 								},
 								{
 									"key": "content",
@@ -102,7 +101,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{host}}/deletefile"
+						"url": {
+							"raw": "{{host}}/deletefile",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"deletefile"
+							]
+						}
 					},
 					"response": []
 				}
@@ -117,7 +124,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/fibonacci?num=10",
+							"raw": "{{host}}/fibonacci?num=45",
 							"host": [
 								"{{host}}"
 							],
@@ -127,7 +134,7 @@
 							"query": [
 								{
 									"key": "num",
-									"value": "10"
+									"value": "45"
 								}
 							]
 						}
@@ -190,7 +197,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{host}}/hash"
+						"url": {
+							"raw": "{{host}}/hash",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"hash"
+							]
+						}
 					},
 					"response": []
 				}
@@ -204,7 +219,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{host}}/help"
+						"url": {
+							"raw": "{{host}}/help",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"help"
+							]
+						}
 					},
 					"response": []
 				}
@@ -219,7 +242,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/loadtest?tasks=5&sleep=1",
+							"raw": "{{host}}/loadtest?tasks=5&sleep=4",
 							"host": [
 								"{{host}}"
 							],
@@ -233,7 +256,7 @@
 								},
 								{
 									"key": "sleep",
-									"value": "1"
+									"value": "4"
 								}
 							]
 						}
@@ -282,7 +305,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/random?count=abc&min=1&max=10",
+							"raw": "{{host}}/random?count=abc&min=40&max=10",
 							"host": [
 								"{{host}}"
 							],
@@ -296,7 +319,7 @@
 								},
 								{
 									"key": "min",
-									"value": "1"
+									"value": "40"
 								},
 								{
 									"key": "max",
@@ -340,7 +363,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{host}}/reverse"
+						"url": {
+							"raw": "{{host}}/reverse",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"reverse"
+							]
+						}
 					},
 					"response": []
 				}
@@ -460,7 +491,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/sleep?seconds=2",
+							"raw": "{{host}}/sleep?seconds=10",
 							"host": [
 								"{{host}}"
 							],
@@ -470,7 +501,7 @@
 							"query": [
 								{
 									"key": "seconds",
-									"value": "2"
+									"value": "10"
 								}
 							]
 						}
@@ -483,7 +514,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/sleep?seconds=2",
+							"raw": "{{host}}/sleep?seconds=30",
 							"host": [
 								"{{host}}"
 							],
@@ -493,7 +524,7 @@
 							"query": [
 								{
 									"key": "seconds",
-									"value": "2"
+									"value": "30"
 								}
 							]
 						}
@@ -505,7 +536,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{host}}/sleep"
+						"url": {
+							"raw": "{{host}}/sleep",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"sleep"
+							]
+						}
 					},
 					"response": []
 				}
@@ -519,7 +558,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{host}}/status"
+						"url": {
+							"raw": "{{host}}/status",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"status"
+							]
+						}
 					},
 					"response": []
 				}
@@ -533,7 +580,15 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{host}}/timestamp"
+						"url": {
+							"raw": "{{host}}/timestamp",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"timestamp"
+							]
+						}
 					},
 					"response": []
 				}
@@ -570,7 +625,121 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "{{host}}/toupper"
+						"url": {
+							"raw": "{{host}}/toupper",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"toupper"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "word count",
+			"item": [
+				{
+					"name": "GET /countwords",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/countwords?url=https://drive.usercontent.google.com/download?id=1LjnbZ6IvLl35YhDeEYJrmmfKIh0qT73U%26export=download%26authuser=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"countwords"
+							],
+							"query": [
+								{
+									"key": "url",
+									"value": "https://drive.usercontent.google.com/download?id=1LjnbZ6IvLl35YhDeEYJrmmfKIh0qT73U&export=download&authuser=1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /countwords - Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/countwords?url=https://drive.usercontent.google.com/download?id=1LjnbZ6IvLl35YhDeEYJrmmfKIh0qT73U%26export=download%26authuser=1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"countwords"
+							],
+							"query": [
+								{
+									"key": "url",
+									"value": "https://drive.usercontent.google.com/download?id=1LjnbZ6IvLl35YhDeEYJrmmfKIh0qT73U&export=download&authuser=1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "montecarlo",
+			"item": [
+				{
+					"name": "GET /montecarlo",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "workers",
+			"item": [
+				{
+					"name": "GET /workers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{host}}/workers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"workers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ping",
+			"item": [
+				{
+					"name": "GET /ping",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
