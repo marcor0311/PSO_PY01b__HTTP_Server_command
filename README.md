@@ -23,6 +23,11 @@ Start Dispatcher (exposed on localhost:8080) + 3 Worker replicas
 docker compose up -d
 ```
 
+Logs for all workers
+```bash
+docker-compose logs --follow dispatcher  
+```
+
 ## How to Use the Server
 
 The server listens for HTTP/1.0 requests over TCP. You can test it with curl or Postman.
@@ -44,23 +49,26 @@ curl "http://localhost:8080/help"
 - **Endpoint:** `/montecarlo?points=N`
 - **Description:** Estimates π by distributing N random point simulations across workers.
 - **Command:**
-  ```bash
+
+```bash
   # replace 1000000 with the total number of random points to use
   curl "http://localhost:8080/montecarlo?points=1000000"
-  ```
+```
 
 ### Word Count
 - **Endpoint:** `/countwords?url=<FILE_URL>`
 - **Description:** Counts the frequency of words in a large file by distributing chunks across workers.
 - **Command:**
-  ```bash
+
+```bash
   # replace <FILE_URL> with the URL of your large file
   curl "http://localhost:8080/countwords?url=<FILE_URL>"
-  ```
-  ```bash
+```
+
+```bash
   # Example: Linux device documentation in plain text
   curl "http://localhost:8080/countwords?url=https://www.kernel.org/doc/Documentation/admin-guide/devices.txt"
-  ```
+```
 
 
 ## Testing with Postman
