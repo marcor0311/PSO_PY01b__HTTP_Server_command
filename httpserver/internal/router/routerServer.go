@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net"
 	"strconv"
+	"time"
 
 	"httpserver/internal/constants"
 	"httpserver/internal/handlers"
@@ -371,6 +373,49 @@ func handleWordCountChunk(conn net.Conn, path string, br *bufio.Reader) {
 	}{req.ID, freq})
 
 	utils.WriteHTTPResponse(conn, constants.StatusOK, string(resBytes))
+}
+
+// Handle Monte Carlo simulation
+func handleMontecarlo(conn net.Conn, path string, br *bufio.Reader) {
+	defer utils.RecoverAndRespond(conn)
+	handlers.TrackWorker("montecarlo", func() {
+		for {
+			line, err := br.ReadString('\n')
+			if err != nil {
+				utils.WriteHTTPResponse(conn, constants.StatusBadRequest, "cannot read headers")
+				return
+			}
+			if line == "\r\n" || line == "\n" {
+				break
+			}
+		}
+
+		var req struct {
+			ID     int `json:"id"`
+			Points int `json:"points"`
+		}
+		if err := json.NewDecoder(br).Decode(&req); err != nil {
+			utils.WriteHTTPResponse(conn, constants.StatusBadRequest, "invalid JSON")
+			return
+		}
+
+		rand.Seed(time.Now().UnixNano())
+		inside := 0
+		for i := 0; i < req.Points; i++ {
+			x := rand.Float64()
+			y := rand.Float64()
+			if x*x+y*y <= 1.0 {
+				inside++
+			}
+		}
+
+		resBytes, _ := json.Marshal(struct {
+			ID     int `json:"id"`
+			Inside int `json:"inside"`
+		}{ID: req.ID, Inside: inside})
+
+		utils.WriteHTTPResponse(conn, constants.StatusOK, string(resBytes))
+	})
 }
 
 // Not found handler

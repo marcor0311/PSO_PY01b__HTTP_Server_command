@@ -28,9 +28,11 @@ func init() {
 	routes[constants.RouteHelp] = handleHelp
 	routes[constants.RouteStatus] = handleStatus
 	routes[constants.ParallelRouteCount] = handleWordCountChunk
+	routes[constants.ParallelRouteMontecarlo] = handleMontecarlo
 	dispatcherRoutes[constants.DispatcherRouteWorkers] = handleWorkers
 	dispatcherRoutes[constants.DispatcherRoutePing] = handlePing
 	dispatcherRoutes[constants.ParallelRouteCount] = handlParallelWordCount
+	dispatcherRoutes[constants.ParallelRouteMontecarlo] = handleParallelMontecarlo
 }
 
 func HandleRoute(path string, conn net.Conn, br *bufio.Reader) {
