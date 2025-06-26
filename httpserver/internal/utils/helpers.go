@@ -33,7 +33,11 @@ func IsParallel(path string) bool {
 	return false
 }
 
-// filterLettersOnly removes all non-letter characters from a word.
+/**
+ * Removes all characters from a text.
+ *
+ * @param {string} - Text.
+ */
 func FilterLettersOnly(word string) string {
 	var b strings.Builder
 	for _, r := range word {

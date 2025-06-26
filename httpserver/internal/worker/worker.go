@@ -56,7 +56,7 @@ func RegisterWorkersFromEnv() {
 }
 
 /**
- * Adds a worker entry to the registry, marks it active, and logs the event.
+ * Adds workers entries to the registry, marks it active, and logs the event.
  *
  * @param {string} id - Logical identifier for the worker.
  * @param {string} address - Base URL where the worker is reachable.
@@ -71,7 +71,7 @@ func RegisterWorker(id, address string) {
 /**
  * Selects one active worker using round-robin logic.
  *
- * @returns {*Worker} Pointer to the chosen worker or nil.
+ * @returns {*Worker} - Pointer to the chosen worker or nil.
  */
 func ChooseWorker() *Worker {
 	WorkerRegistry.Lock()
@@ -92,6 +92,9 @@ func ChooseWorker() *Worker {
 	return selected
 }
 
+/**
+ * Marks worker as inactive
+ */
 func (worker *Worker) MarkInactive() {
 	WorkerRegistry.Lock()
 	defer WorkerRegistry.Unlock()
@@ -99,10 +102,16 @@ func (worker *Worker) MarkInactive() {
 	log.Printf("[Dispatcher] Marked worker %s as inactive", worker.Address)
 }
 
+/**
+ * Sends HTTP request to the worker
+ *
+ * @param {string} endpoint - Enpoint.
+ * @param {body} string - Request body.
+ */
 func SendRequestToWorker(endpoint string, body string) (*http.Response, *Worker, error) {
 	worker := ChooseWorker()
 	if worker == nil {
-		return nil, nil, fmt.Errorf("No active workers")
+		return nil, nil, fmt.Errorf("There are no active workers")
 	}
 
 	log.Printf("[Dispatcher] Sending request (%s) to worker %s", endpoint, worker.Address)

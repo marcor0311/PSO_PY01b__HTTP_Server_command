@@ -327,7 +327,7 @@ func handleLoadTest(conn net.Conn, path string, br *bufio.Reader) {
 
 }
 
-// Status handler
+// /status
 func handleStatus(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("status", func() {
@@ -341,6 +341,7 @@ func handleStatus(conn net.Conn, path string, br *bufio.Reader) {
 	})
 }
 
+// /countwords
 func handleWordCountChunk(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 
@@ -375,7 +376,7 @@ func handleWordCountChunk(conn net.Conn, path string, br *bufio.Reader) {
 	utils.WriteHTTPResponse(conn, constants.StatusOK, string(resBytes))
 }
 
-// Handle Monte Carlo simulation
+// /montecarlo
 func handleMontecarlo(conn net.Conn, path string, br *bufio.Reader) {
 	defer utils.RecoverAndRespond(conn)
 	handlers.TrackWorker("montecarlo", func() {
