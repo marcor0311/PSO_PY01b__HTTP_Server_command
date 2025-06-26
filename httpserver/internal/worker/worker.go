@@ -162,6 +162,7 @@ func CheckWorkerHealth() {
 			if resp != nil {
 				resp.Body.Close()
 			}
+			worker.LastCheck = time.Now()
 		}(worker)
 	}
 }
