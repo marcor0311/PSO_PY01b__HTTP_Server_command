@@ -4,6 +4,7 @@ import (
 	"httpserver/internal/constants"
 	"os"
 	"strings"
+	"unicode"
 )
 
 /**
@@ -30,4 +31,15 @@ func IsParallel(path string) bool {
 		}
 	}
 	return false
+}
+
+// filterLettersOnly removes all non-letter characters from a word.
+func FilterLettersOnly(word string) string {
+	var b strings.Builder
+	for _, r := range word {
+		if unicode.IsLetter(r) {
+			b.WriteRune(r)
+		}
+	}
+	return b.String()
 }

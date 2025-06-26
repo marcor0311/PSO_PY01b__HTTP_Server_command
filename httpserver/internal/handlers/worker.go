@@ -3,7 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"httpserver/internal/worker"
 	"os"
+	"sort"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -66,7 +68,6 @@ func GetStatusJSON() (string, error) {
 	workerLock.RLock()
 	defer workerLock.RUnlock()
 
-	// convert map to slice
 	activeWorkers := make([]WorkerStatus, 0, len(workers))
 	for _, w := range workers {
 		activeWorkers = append(activeWorkers, w)
@@ -84,4 +85,25 @@ func GetStatusJSON() (string, error) {
 		return "", fmt.Errorf("failed to marshal status: %w", err)
 	}
 	return string(jsonBytes), nil
+}
+
+func GetWorkerInformation() (string, error) {
+	worker.WorkerRegistry.Lock()
+	list := make([]worker.Worker, 0, len(worker.Workers))
+	for _, w := range worker.Workers {
+		list = append(list, *w)
+	}
+	worker.WorkerRegistry.Unlock()
+
+	sort.Slice(list, func(i, j int) bool { return list[i].ID < list[j].ID })
+
+	for i := range list {
+		list[i].LastCheck = list[i].LastCheck.In(time.UTC)
+	}
+
+	data, err := json.MarshalIndent(list, "", "  ")
+	if err != nil {
+		return "", fmt.Errorf("Failed parse response")
+	}
+	return string(data), nil
 }

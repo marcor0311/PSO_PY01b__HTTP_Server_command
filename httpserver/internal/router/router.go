@@ -1,15 +1,17 @@
 package router
 
 import (
+	"bufio"
 	"net"
 	"strings"
 
 	"httpserver/internal/constants"
 )
 
-type RouteHandler func(conn net.Conn, path string)
+type RouteHandler func(net.Conn, string, *bufio.Reader)
 
 var routes = map[string]RouteHandler{}
+var dispatcherRoutes = map[string]RouteHandler{}
 
 func init() {
 	routes[constants.RouteFibonacci] = handleFibonacci
@@ -25,13 +27,26 @@ func init() {
 	routes[constants.RouteLoadTest] = handleLoadTest
 	routes[constants.RouteHelp] = handleHelp
 	routes[constants.RouteStatus] = handleStatus
+	routes[constants.ParallelRouteCount] = handleWordCountChunk
+	dispatcherRoutes[constants.DispatcherRouteWorkers] = handleWorkers
+	dispatcherRoutes[constants.DispatcherRoutePing] = handlePing
+	dispatcherRoutes[constants.ParallelRouteCount] = handlParallelWordCount
 }
 
-func HandleRoute(path string, conn net.Conn) {
+func HandleRoute(path string, conn net.Conn, br *bufio.Reader) {
 	cleanPath := strings.SplitN(path, "?", 2)[0]
 	if handler, exists := routes[cleanPath]; exists {
-		handler(conn, path)
+		handler(conn, path, br)
 	} else {
-		handleNotFound(conn, path)
+		handleNotFound(conn, path, br)
 	}
+}
+
+func HandleDispatcherRouter(path string, conn net.Conn, br *bufio.Reader) bool {
+	cleanPath := strings.SplitN(path, "?", 2)[0]
+	if handler, exists := dispatcherRoutes[cleanPath]; exists {
+		handler(conn, path, br)
+		return true
+	}
+	return false
 }
